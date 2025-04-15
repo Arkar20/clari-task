@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
@@ -56,9 +56,17 @@ export default function AIChatbot() {
             </Button>
 
             {isOpen && (
-                <div className="fixed right-4 bottom-20 w-[400px] max-h-[600px] bg-background border rounded-lg shadow-lg z-40">
-                    <div className="p-4 border-b">
+                <div className="fixed right-4 bottom-20 w-[400px] max-h-[600px] bg-background border rounded-lg shadow-lg z-40 dark:border-gray-800">
+                    <div className="p-4 border-b flex items-center justify-between dark:border-gray-800">
                         <h2 className="text-lg font-semibold">AI Assistant</h2>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
                     </div>
                     <ScrollArea className="h-[400px] w-full p-4">
                         <div className="space-y-4">
@@ -75,7 +83,7 @@ export default function AIChatbot() {
                                         className={`max-w-[80%] rounded-lg p-3 ${
                                             message.isUser
                                                 ? "bg-primary text-primary-foreground"
-                                                : "bg-muted"
+                                                : "bg-muted dark:bg-gray-800"
                                         }`}
                                     >
                                         {message.text}
@@ -84,7 +92,7 @@ export default function AIChatbot() {
                             ))}
                         </div>
                     </ScrollArea>
-                    <div className="flex gap-2 p-4 border-t">
+                    <div className="flex gap-2 p-4 border-t dark:border-gray-800">
                         <Input
                             placeholder="Type your message..."
                             value={input}
@@ -95,6 +103,7 @@ export default function AIChatbot() {
                                 }
                             }}
                             disabled={isLoading}
+                            className="dark:bg-gray-800 dark:border-gray-700"
                         />
                         <Button
                             onClick={handleSendMessage}
