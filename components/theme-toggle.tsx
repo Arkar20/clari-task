@@ -3,9 +3,24 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return (
+            <button className="relative rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
+                <div className="h-5 w-5" />
+                <span className="sr-only">Toggle theme</span>
+            </button>
+        );
+    }
 
     return (
         <motion.button
