@@ -9,8 +9,13 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
+    DragOverlay,
 } from "@dnd-kit/core";
-import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import {
+    SortableContext,
+    arrayMove,
+    horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import Column from "./column";
 import { PlusCircle } from "lucide-react";
 import { Button } from "./ui/button";
@@ -43,6 +48,10 @@ interface Column {
 export default function Board() {
     const { columns, addColumn, updateColumns } = useBoardStore();
     const [activeTask, setActiveTask] = useState<Task | null>(null);
+    const [activeColumn, setActiveColumn] = useState<{
+        id: string;
+        title: string;
+    } | null>(null);
     const [newColumnTitle, setNewColumnTitle] = useState("");
 
     const sensors = useSensors(
@@ -57,6 +66,9 @@ export default function Board() {
         if (event.active.data.current?.type === "Task") {
             setActiveTask(event.active.data.current.task);
         }
+        if (event.active.data.current?.type === "Column") {
+            setActiveColumn(event.active.data.current.column);
+        }
     }
 
     function handleDragOver(event: DragOverEvent) {
@@ -70,127 +82,113 @@ export default function Board() {
 
         const isActiveATask = active.data.current?.type === "Task";
         const isOverATask = over.data.current?.type === "Task";
+        const isActiveAColumn = active.data.current?.type === "Column";
+        const isOverAColumn = over.data.current?.type === "Column";
+
+        if (isActiveAColumn && isOverAColumn) {
+            const activeColumnIndex = columns.findIndex(
+                (col) => col.id === activeId
+            );
+            const overColumnIndex = columns.findIndex(
+                (col) => col.id === overId
+            );
+
+            if (activeColumnIndex !== -1 && overColumnIndex !== -1) {
+                const newColumns = arrayMove(
+                    columns,
+                    activeColumnIndex,
+                    overColumnIndex
+                );
+                updateColumns(newColumns);
+            }
+            return;
+        }
 
         if (!isActiveATask) return;
 
-        // Dropping a Task over another Task
-        if (isActiveATask && isOverATask) {
-            const updatedColumns = [...columns];
-            const activeIndex = updatedColumns.findIndex((col: Column) =>
-                col.tasks.find((t: Task) => t.id === activeId)
+        if (isOverATask) {
+            const activeColumn = columns.find((col) =>
+                col.tasks.some((task) => task.id === activeId)
             );
-            const overIndex = updatedColumns.findIndex((col: Column) =>
-                col.tasks.find((t: Task) => t.id === overId)
+            const overColumn = columns.find((col) =>
+                col.tasks.some((task) => task.id === overId)
             );
 
-            if (activeIndex === -1 || overIndex === -1) return;
+            if (!activeColumn || !overColumn) return;
 
-            const activeTask = updatedColumns[activeIndex].tasks.find(
-                (t: Task) => t.id === activeId
+            const activeTaskIndex = activeColumn.tasks.findIndex(
+                (task) => task.id === activeId
             );
-            const overTask = updatedColumns[overIndex].tasks.find(
-                (t: Task) => t.id === overId
+            const overTaskIndex = overColumn.tasks.findIndex(
+                (task) => task.id === overId
             );
 
-            if (!activeTask || !overTask) return;
-
-            updatedColumns.forEach((col: Column) => {
-                if (col.id === updatedColumns[activeIndex].id) {
-                    col.tasks = col.tasks.filter(
-                        (t: Task) => t.id !== activeId
-                    );
-                }
-                if (col.id === updatedColumns[overIndex].id) {
-                    const overTaskIndex = col.tasks.findIndex(
-                        (t: Task) => t.id === overId
-                    );
-                    col.tasks.splice(overTaskIndex, 0, activeTask);
-                }
-            });
-
-            updateColumns(updatedColumns);
+            if (activeTaskIndex !== -1 && overTaskIndex !== -1) {
+                const newTasks = arrayMove(
+                    overColumn.tasks,
+                    activeTaskIndex,
+                    overTaskIndex
+                );
+                const newColumns = columns.map((col) =>
+                    col.id === overColumn.id ? { ...col, tasks: newTasks } : col
+                );
+                updateColumns(newColumns);
+            }
         }
 
-        // Dropping a Task over a Column
-        const isOverAColumn = over.data.current?.type === "Column";
-        if (isActiveATask && isOverAColumn) {
-            const updatedColumns = [...columns];
-            const activeIndex = updatedColumns.findIndex((col: Column) =>
-                col.tasks.find((t: Task) => t.id === activeId)
+        if (isOverAColumn) {
+            const activeColumn = columns.find((col) =>
+                col.tasks.some((task) => task.id === activeId)
             );
+            const overColumn = columns.find((col) => col.id === overId);
 
-            if (activeIndex === -1) return;
+            if (!activeColumn || !overColumn) return;
 
-            const activeTask = updatedColumns[activeIndex].tasks.find(
-                (t: Task) => t.id === activeId
+            const activeTaskIndex = activeColumn.tasks.findIndex(
+                (task) => task.id === activeId
             );
+            const task = activeColumn.tasks[activeTaskIndex];
 
-            if (!activeTask) return;
+            if (activeTaskIndex !== -1) {
+                const newActiveTasks = activeColumn.tasks.filter(
+                    (task) => task.id !== activeId
+                );
+                const newOverTasks = [...overColumn.tasks, task];
 
-            updatedColumns.forEach((col: Column) => {
-                if (col.id === updatedColumns[activeIndex].id) {
-                    col.tasks = col.tasks.filter(
-                        (t: Task) => t.id !== activeId
-                    );
-                }
-                if (col.id === overId) {
-                    col.tasks.push(activeTask);
-                }
-            });
+                const newColumns = columns.map((col) => {
+                    if (col.id === activeColumn.id) {
+                        return { ...col, tasks: newActiveTasks };
+                    }
+                    if (col.id === overColumn.id) {
+                        return { ...col, tasks: newOverTasks };
+                    }
+                    return col;
+                });
 
-            updateColumns(updatedColumns);
+                updateColumns(newColumns);
+            }
         }
     }
 
     function handleDragEnd(event: DragEndEvent) {
         setActiveTask(null);
-    }
-
-    function handleAddColumn() {
-        if (!newColumnTitle.trim()) return;
-        addColumn(newColumnTitle);
-        setNewColumnTitle("");
-        document.getElementById("close-dialog")?.click();
+        setActiveColumn(null);
     }
 
     return (
-        <>
+        <div className="flex h-full w-full flex-col gap-4 p-4">
             <DndContext
                 sensors={sensors}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex h-screen w-full gap-4 overflow-x-auto pb-4">
-                    <AnimatePresence>
-                        <SortableContext
-                            items={columns.map((col: Column) => col.id)}
-                        >
-                            {columns.map((column: Column) => (
-                                <motion.div
-                                    key={column.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    <Column
-                                        column={column}
-                                        activeTask={activeTask}
-                                    />
-                                </motion.div>
-                            ))}
-                        </SortableContext>
-                    </AnimatePresence>
-
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">Board</h1>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="flex h-[600px] w-[280px] items-center justify-center border-2 border-dashed hover:border-primary hover:bg-primary/10"
-                            >
-                                <PlusCircle className="mr-2 h-5 w-5" />
+                            <Button>
+                                <PlusCircle className="mr-2 h-4 w-4" />
                                 Add Column
                             </Button>
                         </DialogTrigger>
@@ -198,7 +196,7 @@ export default function Board() {
                             <DialogHeader>
                                 <DialogTitle>Add New Column</DialogTitle>
                             </DialogHeader>
-                            <div className="flex gap-4 pt-4">
+                            <div className="py-4">
                                 <Input
                                     placeholder="Column title"
                                     value={newColumnTitle}
@@ -206,31 +204,71 @@ export default function Board() {
                                         setNewColumnTitle(e.target.value)
                                     }
                                 />
-                                <DialogFooter className="sm:justify-start">
-                                    <DialogClose asChild>
-                                        <Button
-                                            type="button"
-                                            onClick={handleAddColumn}
-                                        >
-                                            Add
-                                        </Button>
-                                    </DialogClose>
-                                    <DialogClose asChild>
-                                        <Button
-                                            type="button"
-                                            variant="secondary"
-                                            id="close-dialog"
-                                        >
-                                            Close
-                                        </Button>
-                                    </DialogClose>
-                                </DialogFooter>
                             </div>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            if (newColumnTitle.trim()) {
+                                                addColumn(
+                                                    newColumnTitle.trim()
+                                                );
+                                                setNewColumnTitle("");
+                                            }
+                                        }}
+                                    >
+                                        Add
+                                    </Button>
+                                </DialogClose>
+                            </DialogFooter>
                         </DialogContent>
                     </Dialog>
                 </div>
+
+                <div className="flex h-full gap-4 overflow-x-auto">
+                    <SortableContext
+                        items={columns.map((col) => col.id)}
+                        strategy={horizontalListSortingStrategy}
+                    >
+                        <AnimatePresence>
+                            {columns.map((column) => (
+                                <motion.div
+                                    key={column.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <Column column={column} />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </SortableContext>
+                </div>
+
+                <DragOverlay>
+                    {activeTask && (
+                        <div className="rounded-lg border bg-card p-4 shadow-md">
+                            <h3 className="font-medium">{activeTask.title}</h3>
+                            {activeTask.description && (
+                                <p className="text-sm text-muted-foreground">
+                                    {activeTask.description}
+                                </p>
+                            )}
+                        </div>
+                    )}
+                    {activeColumn && (
+                        <div className="w-[300px] rounded-lg border bg-card p-4 shadow-md">
+                            <h3 className="font-medium">
+                                {activeColumn.title}
+                            </h3>
+                        </div>
+                    )}
+                </DragOverlay>
             </DndContext>
+
             <AIChatbot />
-        </>
+        </div>
     );
 }

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface Task {
     id: string;
@@ -79,24 +80,32 @@ const initialColumns: Column[] = [
     },
 ];
 
-export const useBoardStore = create<BoardState>((set) => ({
-    columns: initialColumns,
-    addColumn: (title: string) =>
-        set((state) => ({
-            columns: [
-                ...state.columns,
-                {
-                    id: `column-${Date.now()}`,
-                    title,
-                    tasks: [],
-                },
-            ],
-        })),
-    updateColumns: (columns: Column[]) => set({ columns }),
-    // AI Chat state
-    aiMessages: [],
-    addAIMessage: (message: Message) =>
-        set((state) => ({
-            aiMessages: [...state.aiMessages, message],
-        })),
-}));
+export const useBoardStore = create<BoardState>()(
+    persist(
+        (set) => ({
+            columns: initialColumns,
+            addColumn: (title: string) =>
+                set((state) => ({
+                    columns: [
+                        ...state.columns,
+                        {
+                            id: `column-${Date.now()}`,
+                            title,
+                            tasks: [],
+                        },
+                    ],
+                })),
+            updateColumns: (columns: Column[]) => set({ columns }),
+            // AI Chat state
+            aiMessages: [],
+            addAIMessage: (message: Message) =>
+                set((state) => ({
+                    aiMessages: [...state.aiMessages, message],
+                })),
+        }),
+        {
+            name: "board-storage",
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);

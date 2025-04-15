@@ -4,11 +4,32 @@ import { useBoardStore } from "@/store/useBoardStore";
 
 export async function handleAIChat(message: string) {
     try {
-        console.log("Hello from server action!");
-        console.log("Message received:", message);
+        console.log("AI Chat Server Action Called");
 
         // Get the Zustand store
         const store = useBoardStore.getState();
+
+        // Log the current board state
+        console.log("Current Board State:");
+        console.log("Columns:", store.columns);
+        console.log(
+            "Total Tasks:",
+            store.columns.reduce((acc, col) => acc + col.tasks.length, 0)
+        );
+
+        // Log details of each column and its tasks
+        store.columns.forEach((column, index) => {
+            console.log(`\nColumn ${index + 1}: ${column.title}`);
+            console.log(`Task Count: ${column.tasks.length}`);
+            console.log(
+                "Tasks:",
+                column.tasks.map((task) => ({
+                    id: task.id,
+                    title: task.title,
+                    description: task.description,
+                }))
+            );
+        });
 
         // Add user message to store
         store.addAIMessage({

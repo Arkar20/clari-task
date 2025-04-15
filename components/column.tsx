@@ -2,43 +2,29 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card } from "./ui/card";
+import { Column as ColumnType, Task } from "@/store/useBoardStore";
 import TaskCard from "./task-card";
-import { Button } from "./ui/button";
 import { PlusCircle } from "lucide-react";
+import { Button } from "./ui/button";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
+    DialogClose,
 } from "./ui/dialog";
-import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { AnimatePresence, motion } from "framer-motion";
-import { Column as ColumnType, Task as TaskType } from "@/types";
-import Task from "./task";
-
-interface Task {
-    id: string;
-    title: string;
-    description?: string;
-}
+import { useState } from "react";
 
 interface ColumnProps {
     column: ColumnType;
-    activeTask: TaskType | null;
 }
 
-export default function Column({ column, activeTask }: ColumnProps) {
+export default function Column({ column }: ColumnProps) {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskDescription, setNewTaskDescription] = useState("");
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const {
         attributes,
@@ -58,70 +44,27 @@ export default function Column({ column, activeTask }: ColumnProps) {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        opacity: isDragging ? 0.5 : 1,
     };
 
-    function handleAddTask() {
-        if (!newTaskTitle.trim()) return;
-
-        const newTask: Task = {
-            id: `task-${Date.now()}`,
-            title: newTaskTitle,
-            description: newTaskDescription,
-        };
-
-        column.tasks.push(newTask);
-        setNewTaskTitle("");
-        setNewTaskDescription("");
-
-        document.getElementById("close-dialog")?.click();
-    }
-
-    if (!mounted) return null;
-
     return (
-        <Card
+        <div
             ref={setNodeRef}
             style={style}
-            className={`flex h-[600px] w-[280px] flex-col bg-card p-4 ${
-                isDragging ? "opacity-50" : ""
-            }`}
+            {...attributes}
+            {...listeners}
+            className="flex h-full w-[300px] flex-col gap-4 rounded-lg border bg-card p-4"
         >
-            <div
-                {...attributes}
-                {...listeners}
-                className="mb-4 text-lg font-semibold text-card-foreground"
-            >
-                {column.title}
+            <h2 className="text-lg font-semibold">{column.title}</h2>
+            <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
+                {column.tasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                ))}
             </div>
-
-            <div className="flex-1 space-y-4 overflow-y-auto">
-                <AnimatePresence>
-                    {column.tasks.map((task: TaskType) => (
-                        <motion.div
-                            key={task.id}
-                            layout
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <Task
-                                key={task.id}
-                                task={task}
-                                activeTask={activeTask}
-                            />
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-            </div>
-
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button
-                        variant="outline"
-                        className="mt-4 w-full border-dashed hover:border-primary hover:bg-primary/10"
-                    >
-                        <PlusCircle className="mr-2 h-5 w-5" />
+                    <Button variant="outline" className="w-full">
+                        <PlusCircle className="mr-2 h-4 w-4" />
                         Add Task
                     </Button>
                 </DialogTrigger>
@@ -129,25 +72,45 @@ export default function Column({ column, activeTask }: ColumnProps) {
                     <DialogHeader>
                         <DialogTitle>Add New Task</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 pt-4">
+                    <div className="flex flex-col gap-4 py-4">
                         <Input
                             placeholder="Task title"
                             value={newTaskTitle}
                             onChange={(e) => setNewTaskTitle(e.target.value)}
                         />
-                        <Textarea
+                        <Input
                             placeholder="Task description (optional)"
                             value={newTaskDescription}
                             onChange={(e) =>
                                 setNewTaskDescription(e.target.value)
                             }
                         />
-                        <Button onClick={handleAddTask} className="w-full">
-                            Add Task
-                        </Button>
                     </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    if (newTaskTitle.trim()) {
+                                        const newTask: Task = {
+                                            id: `task-${Date.now()}`,
+                                            title: newTaskTitle.trim(),
+                                            description:
+                                                newTaskDescription.trim() ||
+                                                undefined,
+                                        };
+                                        column.tasks.push(newTask);
+                                        setNewTaskTitle("");
+                                        setNewTaskDescription("");
+                                    }
+                                }}
+                            >
+                                Add
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </Card>
+        </div>
     );
 }
