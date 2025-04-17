@@ -23,6 +23,7 @@ interface BoardState {
     columns: Column[];
     addColumn: (title: string) => void;
     updateColumns: (columns: Column[]) => void;
+    addTask: (columnId: string, task: Task) => void;
     // AI Chat state
     aiMessages: Message[];
     addAIMessage: (message: Message) => void;
@@ -96,6 +97,14 @@ export const useBoardStore = create<BoardState>()(
                     ],
                 })),
             updateColumns: (columns: Column[]) => set({ columns }),
+            addTask: (columnId: string, task: Task) =>
+                set((state) => ({
+                    columns: state.columns.map((column) =>
+                        column.id === columnId
+                            ? { ...column, tasks: [...column.tasks, task] }
+                            : column
+                    ),
+                })),
             // AI Chat state
             aiMessages: [],
             addAIMessage: (message: Message) =>

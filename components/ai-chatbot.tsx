@@ -20,8 +20,8 @@ export default function AIChatbot() {
     const [isLoading, setIsLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
 
-    // Get messages from Zustand store
-    const messages = useBoardStore((state) => state.aiMessages);
+    // Get messages and store functions from Zustand store
+    const { aiMessages, addAIMessage, addTask, columns } = useBoardStore();
 
     useEffect(() => {
         setMounted(true);
@@ -30,13 +30,51 @@ export default function AIChatbot() {
     const handleSendMessage = async () => {
         if (!input.trim() || isLoading || !mounted) return;
 
+        const message = input.trim();
         setInput("");
         setIsLoading(true);
 
         try {
-            await handleAIChat(input);
+            // Add user message to store
+            addAIMessage({
+                id: Date.now().toString(),
+                text: message,
+                isUser: true,
+            });
+
+            // Call server action
+            const response = await handleAIChat(message);
+
+            if (response.success) {
+                // Add AI response to store
+                addAIMessage({
+                    id: (Date.now() + 1).toString(),
+                    text: response.response,
+                    isUser: false,
+                });
+
+                // Handle any actions from the server
+                if (response.action?.type === "ADD_TASK") {
+                    const todoColumn = columns.find(
+                        (col) => col.title === "To Do"
+                    );
+                    if (todoColumn) {
+                        const newTask = {
+                            id: `task-${Date.now()}`,
+                            ...response.action.payload,
+                        };
+                        addTask(todoColumn.id, newTask);
+                    }
+                }
+            }
         } catch (error) {
             console.error("Error sending message:", error);
+            // Add error message to store
+            addAIMessage({
+                id: (Date.now() + 1).toString(),
+                text: "Sorry, something went wrong. Please try again.",
+                isUser: false,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -70,7 +108,7 @@ export default function AIChatbot() {
                     </div>
                     <ScrollArea className="h-[400px] w-full p-4">
                         <div className="space-y-4">
-                            {messages.map((message) => (
+                            {aiMessages.map((message) => (
                                 <div
                                     key={message.id}
                                     className={`flex ${
