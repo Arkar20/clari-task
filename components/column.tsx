@@ -16,13 +16,15 @@ import {
     DialogClose,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 
 interface ColumnProps {
     column: ColumnType;
+    overId?: string | null;
+    activeId?: string | null;
 }
 
-export default function Column({ column }: ColumnProps) {
+const Column = memo(function Column({ column, overId, activeId }: ColumnProps) {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskDescription, setNewTaskDescription] = useState("");
 
@@ -47,18 +49,41 @@ export default function Column({ column }: ColumnProps) {
         opacity: isDragging ? 0.5 : 1,
     };
 
+    const handleAddTask = useCallback(() => {
+        if (newTaskTitle.trim()) {
+            const newTask: Task = {
+                id: `task-${Date.now()}`,
+                title: newTaskTitle.trim(),
+                description: newTaskDescription.trim() || undefined,
+            };
+            column.tasks.push(newTask);
+            setNewTaskTitle("");
+            setNewTaskDescription("");
+        }
+    }, [column, newTaskTitle, newTaskDescription]);
+
+    const isOverColumn = overId === column.id;
+    const isActiveColumn = activeId === column.id;
+
     return (
         <div
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
-            className="flex h-full w-[300px] flex-col gap-4 rounded-lg border bg-card p-4"
+            className={`flex h-full w-[300px] flex-col gap-4 rounded-lg border bg-card p-4 ${
+                isOverColumn && !isActiveColumn ? "ring-2 ring-primary" : ""
+            }`}
         >
             <h2 className="text-lg font-semibold">{column.title}</h2>
             <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
                 {column.tasks.map((task) => (
-                    <TaskCard key={task.id} task={task} />
+                    <TaskCard
+                        key={task.id}
+                        task={task}
+                        overId={overId}
+                        activeId={activeId}
+                    />
                 ))}
             </div>
             <Dialog>
@@ -88,23 +113,7 @@ export default function Column({ column }: ColumnProps) {
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button
-                                variant="outline"
-                                onClick={() => {
-                                    if (newTaskTitle.trim()) {
-                                        const newTask: Task = {
-                                            id: `task-${Date.now()}`,
-                                            title: newTaskTitle.trim(),
-                                            description:
-                                                newTaskDescription.trim() ||
-                                                undefined,
-                                        };
-                                        column.tasks.push(newTask);
-                                        setNewTaskTitle("");
-                                        setNewTaskDescription("");
-                                    }
-                                }}
-                            >
+                            <Button variant="outline" onClick={handleAddTask}>
                                 Add
                             </Button>
                         </DialogClose>
@@ -113,4 +122,6 @@ export default function Column({ column }: ColumnProps) {
             </Dialog>
         </div>
     );
-}
+});
+
+export default Column;
