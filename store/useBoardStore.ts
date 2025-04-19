@@ -13,20 +13,11 @@ interface Column {
     tasks: Task[];
 }
 
-interface Message {
-    id: string;
-    text: string;
-    isUser: boolean;
-}
-
 interface BoardState {
     columns: Column[];
     addColumn: (title: string) => void;
     updateColumns: (columns: Column[]) => void;
     addTask: (columnId: string, task: Task) => void;
-    // AI Chat state
-    aiMessages: Message[];
-    addAIMessage: (message: Message) => void;
 }
 
 const initialColumns: Column[] = [
@@ -104,12 +95,6 @@ export const useBoardStore = create<BoardState>()(
                             ? { ...column, tasks: [...column.tasks, task] }
                             : column
                     ),
-                })),
-            // AI Chat state
-            aiMessages: [],
-            addAIMessage: (message: Message) =>
-                set((state) => ({
-                    aiMessages: [...state.aiMessages, message],
                 })),
         }),
         {

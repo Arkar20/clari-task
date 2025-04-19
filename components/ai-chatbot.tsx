@@ -6,13 +6,9 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { handleAIChat } from "@/app/actions/ai-chat";
+import { useChatStore } from "@/store/useChatStore";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useBoardStore } from "@/store/useBoardStore";
-
-interface Message {
-    id: string;
-    text: string;
-    isUser: boolean;
-}
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -21,7 +17,7 @@ export default function AIChatbot() {
     const [mounted, setMounted] = useState(false);
 
     // Get messages and store functions from Zustand store
-    const { aiMessages, addAIMessage, addTask, columns } = useBoardStore();
+    const { addMessage, messages } = useChatStore();
 
     useEffect(() => {
         setMounted(true);
@@ -36,44 +32,33 @@ export default function AIChatbot() {
 
         try {
             // Add user message to store
-            addAIMessage({
+            addMessage({
                 id: Date.now().toString(),
-                text: message,
-                isUser: true,
+                role: "user",
+                title: message,
             });
 
-            // Call server action
-            const response = await handleAIChat(message);
+            const messages = prepareMessages(message);
+
+            // call open ai api
+            const response = await handleAIChat(messages);
 
             if (response.success) {
-                // Add AI response to store
-                addAIMessage({
-                    id: (Date.now() + 1).toString(),
-                    text: response.response,
-                    isUser: false,
+                addMessage({
+                    id: Date.now().toString(),
+                    role: "assistant",
+                    title: response.message,
                 });
-
-                // Handle any actions from the server
-                if (response.action?.type === "ADD_TASK") {
-                    const todoColumn = columns.find(
-                        (col) => col.title === "To Do"
-                    );
-                    if (todoColumn) {
-                        const newTask = {
-                            id: `task-${Date.now()}`,
-                            ...response.action.payload,
-                        };
-                        addTask(todoColumn.id, newTask);
-                    }
-                }
             }
+
+            // put the response to the chat history
         } catch (error) {
             console.error("Error sending message:", error);
             // Add error message to store
-            addAIMessage({
+            addMessage({
                 id: (Date.now() + 1).toString(),
-                text: "Sorry, something went wrong. Please try again.",
-                isUser: false,
+                role: "user",
+                title: "Error connecting to chat bot",
             });
         } finally {
             setIsLoading(false);
@@ -108,23 +93,23 @@ export default function AIChatbot() {
                     </div>
                     <ScrollArea className="h-[400px] w-full p-4">
                         <div className="space-y-4">
-                            {aiMessages.map((message) => (
+                            {messages.map((message) => (
                                 <div
                                     key={message.id}
                                     className={`flex ${
-                                        message.isUser
+                                        message.role === "user"
                                             ? "justify-end"
                                             : "justify-start"
                                     }`}
                                 >
                                     <div
                                         className={`max-w-[80%] rounded-lg p-3 ${
-                                            message.isUser
+                                            message.role === "user"
                                                 ? "bg-primary text-primary-foreground"
                                                 : "bg-muted dark:bg-gray-800"
                                         }`}
                                     >
-                                        {message.text}
+                                        {message.title}
                                     </div>
                                 </div>
                             ))}
@@ -155,3 +140,33 @@ export default function AIChatbot() {
         </>
     );
 }
+
+const prepareMessages = (message: string): ChatCompletionMessageParam[] => {
+    const history = useChatStore.getState().messages;
+
+    const columns = useBoardStore.getState().columns;
+
+    const formattedMessages = history.map((msg) => ({
+        role: msg.role,
+        content: msg.title,
+    }));
+
+    // Optionally add a system prompt at the beginning
+    return [
+        {
+            role: "system",
+            content:
+                `You are an AI assistant that helps users manage tasks, projects, and boards — similar to Trello.
+            Users will provide you with task, project, and board information.
+            Your job is to understand the structure, remember the details, and answer any questions they ask about it.
+            You can:
+            - check the state of the task
+            Only respond based on the given data. If the user asks something not provided, ask them for the missing info.
+            here's the data you have in json string format: ${JSON.stringify(
+                columns
+            )}
+            Be concise, helpful, and stay in assistant mode.`.trim(),
+        },
+        ...(formattedMessages as ChatCompletionMessageParam[]),
+    ];
+};
