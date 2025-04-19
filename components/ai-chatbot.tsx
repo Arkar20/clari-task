@@ -144,8 +144,6 @@ export default function AIChatbot() {
 const prepareMessages = (message: string): ChatCompletionMessageParam[] => {
     const history = useChatStore.getState().messages;
 
-    const columns = useBoardStore.getState().columns;
-
     const formattedMessages = history.map((msg) => ({
         role: msg.role,
         content: msg.title,
@@ -156,16 +154,10 @@ const prepareMessages = (message: string): ChatCompletionMessageParam[] => {
         {
             role: "system",
             content:
-                `You are an AI assistant that helps users manage tasks, projects, and boards — similar to Trello.
-            Users will provide you with task, project, and board information.
-            Your job is to understand the structure, remember the details, and answer any questions they ask about it.
-            You can:
-            - check the state of the task
-            Only respond based on the given data. If the user asks something not provided, ask them for the missing info.
-            here's the data you have in json string format: ${JSON.stringify(
-                columns
-            )}
-            Be concise, helpful, and stay in assistant mode.`.trim(),
+                `You are a task management assistant that helps users manage boards and tasks, like Trello.
+Users may ask about tasks based on column names, task names, or descriptions.
+Use tools like 'search_tasks' if you need to look into the task list to answer their questions.
+Be concise, clear, and only respond with information you can confirm from user input or tool results.`.trim(),
         },
         ...(formattedMessages as ChatCompletionMessageParam[]),
     ];

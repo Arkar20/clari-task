@@ -1,5 +1,4 @@
 "use server";
-import { useChatStore } from "@/store/useChatStore";
 import { handleAiCall } from "./openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 type ResponseType = {
@@ -20,6 +19,7 @@ export async function handleAIChat(
         return {
             success: false,
             error: "Failed to process message",
+            message: "Error",
         };
     }
 }

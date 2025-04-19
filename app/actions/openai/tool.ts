@@ -1,4 +1,4 @@
-const searchTool = {
+export const searchTool = {
     type: "function",
     function: {
         name: "search_tasks",
