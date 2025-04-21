@@ -62,6 +62,8 @@ const Column = memo(function Column({
     };
 
     const handleAddTask = () => {
+        if (!column) return;
+
         if (newTaskTitle.trim()) {
             const newTask: Task = {
                 id: `task-${Date.now()}`,
