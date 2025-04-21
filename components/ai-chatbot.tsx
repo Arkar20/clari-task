@@ -10,6 +10,11 @@ import { useChatStore } from "@/store/useChatStore";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useBoardStore } from "@/store/useBoardStore";
 
+type SearchParamsTool = {
+    columnName: string;
+    taskName: string;
+};
+
 export default function AIChatbot() {
     const [input, setInput] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -33,22 +38,36 @@ export default function AIChatbot() {
         try {
             // Add user message to store
             addMessage({
-                id: Date.now().toString(),
                 role: "user",
-                title: message,
+                content: message,
             });
 
-            const messages = prepareMessages(message);
+            const messages = prepareMessages();
 
-            // call open ai api
+            console.log(messages);
+
+            // // call open ai api
             const response = await handleAIChat(messages);
 
-            if (response.success) {
+            if (response.success && response.type === "message") {
                 addMessage({
-                    id: Date.now().toString(),
                     role: "assistant",
-                    title: response.message,
+                    content: response.message,
                 });
+            }
+
+            if (response.success && response.type === "tool_call") {
+                const { tool, args } = response;
+
+                // Handle tool call here
+                if (response.tool === "search_tasks") {
+                    addMessage(response.toolcall_message);
+
+                    handleSearchTasks(
+                        response.toolCallId,
+                        args as SearchParamsTool
+                    );
+                }
             }
 
             // put the response to the chat history
@@ -56,12 +75,56 @@ export default function AIChatbot() {
             console.error("Error sending message:", error);
             // Add error message to store
             addMessage({
-                id: (Date.now() + 1).toString(),
                 role: "user",
-                title: "Error connecting to chat bot",
+                content: "Error connecting to chat bot",
             });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleSearchTasks = async (
+        toolCallId: string,
+        { columnName, taskName }: SearchParamsTool
+    ) => {
+        const { columns } = useBoardStore.getState();
+
+        let results = columns.flatMap((column) =>
+            column.tasks.map((task) => ({
+                column: column.title,
+                task: task.title,
+                description: task.description,
+                board: column.title,
+            }))
+        );
+
+        if (columnName) {
+            results = results.filter((task) =>
+                task.board.toLowerCase().includes(columnName.toLowerCase())
+            );
+        }
+
+        if (taskName) {
+            results = results.filter((task) =>
+                task.task.toLowerCase().includes(taskName.toLowerCase())
+            );
+        }
+
+        addMessage({
+            role: "tool",
+            content: JSON.stringify(results),
+            tool_call_id: toolCallId,
+        });
+
+        const messages = prepareMessages();
+
+        const response = await handleAIChat(messages);
+
+        if (response.success && response.type === "message") {
+            addMessage({
+                role: "assistant",
+                content: response.message,
+            });
         }
     };
 
@@ -93,26 +156,68 @@ export default function AIChatbot() {
                     </div>
                     <ScrollArea className="h-[400px] w-full p-4">
                         <div className="space-y-4">
-                            {messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`flex ${
+                            {messages
+                                .filter(
+                                    (message) =>
+                                        message.role === "assistant" ||
                                         message.role === "user"
-                                            ? "justify-end"
-                                            : "justify-start"
-                                    }`}
-                                >
+                                )
+                                .map((message, index) => (
                                     <div
-                                        className={`max-w-[80%] rounded-lg p-3 ${
+                                        key={index}
+                                        className={`flex ${
                                             message.role === "user"
-                                                ? "bg-primary text-primary-foreground"
-                                                : "bg-muted dark:bg-gray-800"
+                                                ? "justify-end"
+                                                : "justify-start"
                                         }`}
                                     >
-                                        {message.title}
+                                        <div
+                                            className={`max-w-[80%] rounded-lg p-3 ${
+                                                message.role === "user"
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted dark:bg-gray-800"
+                                            }`}
+                                        >
+                                            {typeof message.content === "string"
+                                                ? message.content
+                                                : Array.isArray(message.content)
+                                                ? message.content.map(
+                                                      (part, index) => {
+                                                          if ("text" in part) {
+                                                              return (
+                                                                  <span
+                                                                      key={
+                                                                          index
+                                                                      }
+                                                                  >
+                                                                      {
+                                                                          part.text
+                                                                      }
+                                                                  </span>
+                                                              );
+                                                          }
+                                                          if (
+                                                              "refusal" in part
+                                                          ) {
+                                                              return (
+                                                                  <em
+                                                                      key={
+                                                                          index
+                                                                      }
+                                                                  >
+                                                                      {
+                                                                          part.refusal
+                                                                      }
+                                                                  </em>
+                                                              );
+                                                          }
+                                                          return null;
+                                                      }
+                                                  )
+                                                : null}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </ScrollArea>
                     <div className="flex gap-2 p-4 border-t dark:border-gray-800">
@@ -141,13 +246,8 @@ export default function AIChatbot() {
     );
 }
 
-const prepareMessages = (message: string): ChatCompletionMessageParam[] => {
+const prepareMessages = (): ChatCompletionMessageParam[] => {
     const history = useChatStore.getState().messages;
-
-    const formattedMessages = history.map((msg) => ({
-        role: msg.role,
-        content: msg.title,
-    }));
 
     // Optionally add a system prompt at the beginning
     return [
@@ -159,6 +259,6 @@ Users may ask about tasks based on column names, task names, or descriptions.
 Use tools like 'search_tasks' if you need to look into the task list to answer their questions.
 Be concise, clear, and only respond with information you can confirm from user input or tool results.`.trim(),
         },
-        ...(formattedMessages as ChatCompletionMessageParam[]),
+        ...history,
     ];
 };

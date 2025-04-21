@@ -1,15 +1,10 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-
-export interface Message {
-    id: string;
-    title: string;
-    role: "user" | "tool" | "assistant";
-}
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 interface ChatState {
-    messages: Message[];
-    addMessage: (message: Message) => void;
+    messages: ChatCompletionMessageParam[];
+    addMessage: (message: ChatCompletionMessageParam) => void;
 }
 
 export const useChatStore = create<ChatState>()(

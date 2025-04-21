@@ -10,7 +10,6 @@ import {
     useSensor,
     useSensors,
     DragOverlay,
-    DragOverlayProps,
 } from "@dnd-kit/core";
 import {
     SortableContext,

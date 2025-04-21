@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-interface Task {
+export interface Task {
     id: string;
     title: string;
     description?: string;
 }
 
-interface Column {
+export interface Column {
     id: string;
     title: string;
     tasks: Task[];

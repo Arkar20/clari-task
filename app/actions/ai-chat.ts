@@ -1,24 +1,21 @@
 "use server";
 import { handleAiCall } from "./openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-type ResponseType = {
-    success: boolean;
-    message: string;
-    error?: string;
-};
+import { AIResponse } from "../actions/openai";
+
 export async function handleAIChat(
     messages: ChatCompletionMessageParam[]
-): Promise<ResponseType> {
+): Promise<AIResponse> {
     try {
+        console.log(messages);
         // Call OpenAI API
         const response = await handleAiCall(messages);
 
         return response;
     } catch (error) {
-        console.error("Error in handleAIChat:", error);
         return {
+            type: "message",
             success: false,
-            error: "Failed to process message",
             message: "Error",
         };
     }

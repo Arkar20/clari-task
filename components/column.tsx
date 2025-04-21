@@ -77,7 +77,7 @@ const Column = memo(function Column({ column, overId, activeId }: ColumnProps) {
         >
             <h2 className="text-lg font-semibold">{column.title}</h2>
             <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
-                {column.tasks.map((task) => (
+                {column.tasks.map((task: Task) => (
                     <TaskCard
                         key={task.id}
                         task={task}
