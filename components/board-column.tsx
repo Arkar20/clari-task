@@ -16,6 +16,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { useState } from "react";
+import { useBoardStore } from "@/store/useBoardStore";
 
 interface Task {
     id: string;
@@ -38,6 +39,8 @@ interface BoardColumnProps {
 export function BoardColumn({ board, activeTask }: BoardColumnProps) {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskDescription, setNewTaskDescription] = useState("");
+
+    const { addTask, columns } = useBoardStore();
 
     const {
         attributes,
@@ -64,24 +67,12 @@ export function BoardColumn({ board, activeTask }: BoardColumnProps) {
         if (!newTaskTitle.trim()) return;
 
         try {
-            const response = await fetch("/api/tasks", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    title: newTaskTitle,
-                    description: newTaskDescription,
-                    boardId: board.id,
-                }),
+            addTask(board.id, {
+                id: (columns.length + 1).toString(),    
+                title: newTaskTitle,
+                description: newTaskDescription,
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to create task");
-            }
-
-            const newTask = await response.json();
-            board.tasks.push(newTask);
             setNewTaskTitle("");
             setNewTaskDescription("");
             document.getElementById("close-dialog")?.click();

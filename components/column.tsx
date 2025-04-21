@@ -2,7 +2,11 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Column as ColumnType, Task } from "@/store/useBoardStore";
+import {
+    Column as ColumnType,
+    Task,
+    useBoardStore,
+} from "@/store/useBoardStore";
 import TaskCard from "./task-card";
 import { PlusCircle } from "lucide-react";
 import { Button } from "./ui/button";
@@ -16,17 +20,25 @@ import {
     DialogClose,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { useState, useCallback, memo } from "react";
+import { useState, memo } from "react";
 
 interface ColumnProps {
-    column: ColumnType;
+    columnId: string;
     overId?: string | null;
     activeId?: string | null;
 }
 
-const Column = memo(function Column({ column, overId, activeId }: ColumnProps) {
+const Column = memo(function Column({
+    columnId,
+    overId,
+    activeId,
+}: ColumnProps) {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskDescription, setNewTaskDescription] = useState("");
+
+    const { columns, addTask } = useBoardStore();
+
+    const column = columns.find((col) => col.id === columnId);
 
     const {
         attributes,
@@ -36,7 +48,7 @@ const Column = memo(function Column({ column, overId, activeId }: ColumnProps) {
         transition,
         isDragging,
     } = useSortable({
-        id: column.id,
+        id: columnId,
         data: {
             type: "Column",
             column,
@@ -49,18 +61,24 @@ const Column = memo(function Column({ column, overId, activeId }: ColumnProps) {
         opacity: isDragging ? 0.5 : 1,
     };
 
-    const handleAddTask = useCallback(() => {
+    const handleAddTask = () => {
         if (newTaskTitle.trim()) {
             const newTask: Task = {
                 id: `task-${Date.now()}`,
                 title: newTaskTitle.trim(),
                 description: newTaskDescription.trim() || undefined,
             };
-            column.tasks.push(newTask);
+
+            addTask(column.id, newTask);
+
             setNewTaskTitle("");
             setNewTaskDescription("");
         }
-    }, [column, newTaskTitle, newTaskDescription]);
+    };
+
+    if (!column) {
+        return null;
+    }
 
     const isOverColumn = overId === column.id;
     const isActiveColumn = activeId === column.id;

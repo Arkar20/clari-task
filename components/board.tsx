@@ -47,6 +47,7 @@ interface Column {
 
 export default function Board() {
     const { columns, addColumn, updateColumns } = useBoardStore();
+
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const [activeColumn, setActiveColumn] = useState<{
         id: string;
@@ -231,6 +232,7 @@ export default function Board() {
     return (
         <div className="flex h-full w-full flex-col gap-4 p-4">
             <DndContext
+                id={"board"}
                 sensors={sensors}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -294,7 +296,7 @@ export default function Board() {
                                     transition={{ duration: 0.2 }}
                                 >
                                     <Column
-                                        column={column}
+                                        columnId={column.id}
                                         overId={overId}
                                         activeId={
                                             activeTask?.id || activeColumn?.id

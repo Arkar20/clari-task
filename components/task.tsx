@@ -7,10 +7,9 @@ import { useState, useEffect } from "react";
 
 interface TaskProps {
     task: TaskType;
-    activeTask: TaskType | null;
 }
 
-export default function Task({ task, activeTask }: TaskProps) {
+export default function Task({ task }: TaskProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
