@@ -62,20 +62,18 @@ const Column = memo(function Column({
     };
 
     const handleAddTask = () => {
-        if (!column) return;
+        if (!column || !newTaskTitle.trim()) return;
 
-        if (newTaskTitle.trim()) {
-            const newTask: Task = {
-                id: `task-${Date.now()}`,
-                title: newTaskTitle.trim(),
-                description: newTaskDescription.trim() || undefined,
-            };
+        const newTask: Task = {
+            id: `task-${Date.now()}`,
+            title: newTaskTitle.trim(),
+            description: newTaskDescription.trim() || undefined,
+        };
 
-            addTask(column.id, newTask);
+        addTask(column.id, newTask);
 
-            setNewTaskTitle("");
-            setNewTaskDescription("");
-        }
+        setNewTaskTitle("");
+        setNewTaskDescription("");
     };
 
     if (!column) {

@@ -7,7 +7,6 @@ export async function handleAIChat(
     messages: ChatCompletionMessageParam[]
 ): Promise<AIResponse> {
     try {
-        console.log(messages);
         // Call OpenAI API
         const response = await handleAiCall(messages);
 

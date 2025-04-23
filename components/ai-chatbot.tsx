@@ -7,13 +7,14 @@ import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { handleAIChat } from "@/app/actions/ai-chat";
 import { useChatStore } from "@/store/useChatStore";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { useBoardStore } from "@/store/useBoardStore";
-
-type SearchParamsTool = {
-    columnName: string;
-    taskName: string;
-};
+import {
+    prepareMessages,
+    handleSearchTasks,
+    SearchParamsTool,
+} from "@/lib/ai/index";
+import { toast } from "sonner";
+import { AiTextMessage } from "./ai-text-message";
+import { toolNames } from "@/app/actions/openai/tool";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -44,8 +45,6 @@ export default function AIChatbot() {
 
             const messages = prepareMessages();
 
-            console.log(messages);
-
             // // call open ai api
             const response = await handleAIChat(messages);
 
@@ -57,16 +56,43 @@ export default function AIChatbot() {
             }
 
             if (response.success && response.type === "tool_call") {
-                const { tool, args } = response;
+                const { toolCallId, toolCallMessage, args } = response;
+
+                addMessage(toolCallMessage);
 
                 // Handle tool call here
-                if (response.tool === "search_tasks") {
-                    addMessage(response.toolcall_message);
+                let results = [];
 
-                    handleSearchTasks(
-                        response.toolCallId,
-                        args as SearchParamsTool
-                    );
+                for (const tool of toolNames) {
+                    switch (tool) {
+                        case "search_tasks":
+                            results = await handleSearchTasks(
+                                args as SearchParamsTool
+                            );
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                if (results.length > 0) {
+                    addMessage({
+                        role: "tool",
+                        content: JSON.stringify(results.length),
+                        tool_call_id: toolCallId,
+                    });
+
+                    const messages = prepareMessages();
+
+                    const response = await handleAIChat(messages);
+
+                    if (response.success && response.type === "message") {
+                        addMessage({
+                            role: "assistant",
+                            content: response.message,
+                        });
+                    }
                 }
             }
 
@@ -74,57 +100,9 @@ export default function AIChatbot() {
         } catch (error) {
             console.error("Error sending message:", error);
             // Add error message to store
-            addMessage({
-                role: "user",
-                content: "Error connecting to chat bot",
-            });
+            toast.error("Error Connectiong To AI Assistant.");
         } finally {
             setIsLoading(false);
-        }
-    };
-
-    const handleSearchTasks = async (
-        toolCallId: string,
-        { columnName, taskName }: SearchParamsTool
-    ) => {
-        const { columns } = useBoardStore.getState();
-
-        let results = columns.flatMap((column) =>
-            column.tasks.map((task) => ({
-                column: column.title,
-                task: task.title,
-                description: task.description,
-                board: column.title,
-            }))
-        );
-
-        if (columnName) {
-            results = results.filter((task) =>
-                task.board.toLowerCase().includes(columnName.toLowerCase())
-            );
-        }
-
-        if (taskName) {
-            results = results.filter((task) =>
-                task.task.toLowerCase().includes(taskName.toLowerCase())
-            );
-        }
-
-        addMessage({
-            role: "tool",
-            content: JSON.stringify(results),
-            tool_call_id: toolCallId,
-        });
-
-        const messages = prepareMessages();
-
-        const response = await handleAIChat(messages);
-
-        if (response.success && response.type === "message") {
-            addMessage({
-                role: "assistant",
-                content: response.message,
-            });
         }
     };
 
@@ -178,43 +156,7 @@ export default function AIChatbot() {
                                                     : "bg-muted dark:bg-gray-800"
                                             }`}
                                         >
-                                            {typeof message.content === "string"
-                                                ? message.content
-                                                : Array.isArray(message.content)
-                                                ? message.content.map(
-                                                      (part, index) => {
-                                                          if ("text" in part) {
-                                                              return (
-                                                                  <span
-                                                                      key={
-                                                                          index
-                                                                      }
-                                                                  >
-                                                                      {
-                                                                          part.text
-                                                                      }
-                                                                  </span>
-                                                              );
-                                                          }
-                                                          if (
-                                                              "refusal" in part
-                                                          ) {
-                                                              return (
-                                                                  <em
-                                                                      key={
-                                                                          index
-                                                                      }
-                                                                  >
-                                                                      {
-                                                                          part.refusal
-                                                                      }
-                                                                  </em>
-                                                              );
-                                                          }
-                                                          return null;
-                                                      }
-                                                  )
-                                                : null}
+                                            <AiTextMessage message={message} />
                                         </div>
                                     </div>
                                 ))}
@@ -245,20 +187,3 @@ export default function AIChatbot() {
         </>
     );
 }
-
-const prepareMessages = (): ChatCompletionMessageParam[] => {
-    const history = useChatStore.getState().messages;
-
-    // Optionally add a system prompt at the beginning
-    return [
-        {
-            role: "system",
-            content:
-                `You are a task management assistant that helps users manage boards and tasks, like Trello.
-Users may ask about tasks based on column names, task names, or descriptions.
-Use tools like 'search_tasks' if you need to look into the task list to answer their questions.
-Be concise, clear, and only respond with information you can confirm from user input or tool results.`.trim(),
-        },
-        ...history,
-    ];
-};
