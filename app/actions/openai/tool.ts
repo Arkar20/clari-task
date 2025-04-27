@@ -1,6 +1,27 @@
-import { ChatCompletionTool } from "openai/resources/index.mjs";
+import { Column } from "@/store/useBoardStore";
+import { handleSearchTasks, SearchParamsTool, TaskWithColumn } from "./handler";
 
-export const searchTool: ChatCompletionTool = {
+type ToolName = "search_tasks" | "create_task";
+
+export type ToolParamsMap = {
+    search_tasks: SearchParamsTool;
+    create_task: void;
+};
+
+type AiTool<Name extends ToolName = ToolName> = {
+    function: {
+        name: Name;
+        description: string;
+        parameters: any;
+    };
+    type: "function";
+    handleTool?: (
+        board: Column[],
+        params: ToolParamsMap[Name]
+    ) => Promise<TaskWithColumn[]>;
+};
+
+export const searchTool: AiTool<"search_tasks"> = {
     type: "function",
     function: {
         name: "search_tasks",
@@ -8,30 +29,25 @@ export const searchTool: ChatCompletionTool = {
         parameters: {
             type: "object",
             properties: {
-                columnName: {
-                    type: "string",
-                    description:
-                        "The name of the column where the task might be, e.g., 'To Do', 'In Progress', 'Done'",
-                },
-                taskName: {
-                    type: "string",
-                    description: "The exact or partial name of the task",
-                },
+                columnName: { type: "string", description: "Column name" },
+                taskName: { type: "string", description: "Task name" },
                 description: {
                     type: "string",
-                    description:
-                        "A keyword or phrase to match in the task's description",
+                    description: "Task description",
                 },
             },
             required: [],
         },
     },
+    handleTool: async (board) => {
+        return await handleSearchTasks(board);
+    },
 };
 
-export const createTicketTool: ChatCompletionTool = {
+export const createTicketTool: AiTool<"create_task"> = {
     type: "function",
     function: {
-        name: "create_ticket",
+        name: "create_task",
         description: "Create a new task/ticket in a specific column",
         parameters: {
             type: "object",
@@ -61,6 +77,4 @@ export const createTicketTool: ChatCompletionTool = {
     },
 };
 
-export const tools = [searchTool, createTicketTool];
-
-export const toolNames = tools.map((tool) => tool.function.name);
+export const tools = [searchTool];

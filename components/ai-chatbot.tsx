@@ -7,15 +7,11 @@ import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { handleAIChat } from "@/app/actions/ai-chat";
 import { useChatStore } from "@/store/useChatStore";
-import {
-    prepareMessages,
-    handleSearchTasks,
-    SearchParamsTool,
-    TaskWithColumn,
-} from "@/lib/ai/index";
+import { prepareMessages } from "@/lib/ai/index";
 import { AiTextMessage } from "./ai-text-message";
-import { toolNames } from "@/app/actions/openai/tool";
 import { useToast } from "@/hooks/use-toast";
+import { tools } from "@/app/actions/openai/tool";
+import { useBoardStore } from "@/store/useBoardStore";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -27,6 +23,7 @@ export default function AIChatbot() {
 
     // Get messages and store functions from Zustand store
     const { addMessage, messages } = useChatStore();
+    const { columns } = useBoardStore();
 
     useEffect(() => {
         setMounted(true);
@@ -59,31 +56,28 @@ export default function AIChatbot() {
             }
 
             if (response.success && response.type === "tool_call") {
-                const { toolCallId, toolCallMessage, args } = response;
+                const { toolCall, message } = response;
 
-                addMessage(toolCallMessage);
+                addMessage(message);
 
-                // Handle tool call here
-                let results: TaskWithColumn[] = [];
+                const toolToRun = tools.find(
+                    (t) => t.function.name === toolCall.function.name
+                );
 
-                for (const tool of toolNames) {
-                    switch (tool) {
-                        case "search_tasks":
-                            results = await handleSearchTasks(
-                                args as SearchParamsTool
-                            );
-                            break;
+                const args = toolCall.function.arguments
+                    ? JSON.parse(toolCall.function.arguments)
+                    : undefined;
 
-                        default:
-                            break;
-                    }
-                }
+                const results = await toolToRun?.handleTool?.(
+                    columns,
+                    args ?? undefined
+                );
 
-                if (results.length > 0) {
+                if (results && results.length > 0) {
                     addMessage({
                         role: "tool",
                         content: JSON.stringify(results),
-                        tool_call_id: toolCallId,
+                        tool_call_id: toolCall.id,
                     });
 
                     const messages = prepareMessages();
@@ -115,7 +109,6 @@ export default function AIChatbot() {
 
     if (!mounted) return null;
 
-    console.log(messages);
     return (
         <>
             <Button

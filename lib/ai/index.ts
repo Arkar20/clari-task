@@ -1,14 +1,6 @@
-import {
-    ChatCompletionContentPartText,
-    ChatCompletionMessageParam,
-} from "openai/resources/index.mjs";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useChatStore } from "@/store/useChatStore";
-import { Column, Task, useBoardStore } from "@/store/useBoardStore";
-
-export type SearchParamsTool = {
-    columnName: string;
-    taskName: string;
-};
+import { Column } from "@/store/useBoardStore";
 
 export const prepareMessages = (): ChatCompletionMessageParam[] => {
     const history = useChatStore.getState().messages;
@@ -25,37 +17,4 @@ Be concise, clear, and only respond with information you can confirm from user i
         },
         ...history,
     ];
-};
-export type TaskWithColumn = Task & {
-    column: string;
-};
-export const handleSearchTasks = async ({
-    columnName,
-    taskName,
-}: SearchParamsTool): Promise<TaskWithColumn[]> => {
-    const { columns } = useBoardStore.getState();
-
-    let results = columns.flatMap((column) =>
-        column.tasks.map((task) => ({
-            ...task,
-            column: column.title,
-            task: task.title,
-            description: task.description,
-            board: column.title,
-        }))
-    );
-
-    if (columnName) {
-        results = results.filter((task) =>
-            task.board.toLowerCase().includes(columnName.toLowerCase())
-        );
-    }
-
-    if (taskName) {
-        results = results.filter((task) =>
-            task.task.toLowerCase().includes(taskName.toLowerCase())
-        );
-    }
-
-    return results;
 };

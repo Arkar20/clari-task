@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { createTicketTool, searchTool, tools } from "./tool";
+import { tools } from "./tool";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -15,10 +15,8 @@ export type AIResponse =
     | {
           type: "tool_call";
           success: boolean;
-          tool: string;
-          toolCallId: string;
-          args: Object;
-          toolCallMessage: OpenAI.Chat.Completions.ChatCompletionMessage;
+          message: OpenAI.Chat.Completions.ChatCompletionMessage;
+          toolCall: OpenAI.Chat.Completions.ChatCompletionMessageToolCall;
       };
 
 export const handleAiCall = async (
@@ -38,20 +36,13 @@ export const handleAiCall = async (
             assistantMessage.finish_reason == "tool_calls" &&
             assistantMessage.message.tool_calls
         ) {
-            const message = assistantMessage.message;
-
             const toolCall = assistantMessage.message.tool_calls[0];
-
-            const functionName = toolCall.function.name;
-            const args = JSON.parse(toolCall.function.arguments);
 
             return {
                 type: "tool_call",
                 success: true,
-                args,
-                tool: functionName,
-                toolCallId: toolCall.id,
-                toolCallMessage: message,
+                toolCall,
+                message: assistantMessage.message,
             };
         }
 
