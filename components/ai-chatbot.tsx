@@ -11,16 +11,19 @@ import {
     prepareMessages,
     handleSearchTasks,
     SearchParamsTool,
+    TaskWithColumn,
 } from "@/lib/ai/index";
-import { toast } from "sonner";
 import { AiTextMessage } from "./ai-text-message";
 import { toolNames } from "@/app/actions/openai/tool";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
+
+    const { toast } = useToast();
 
     // Get messages and store functions from Zustand store
     const { addMessage, messages } = useChatStore();
@@ -61,7 +64,7 @@ export default function AIChatbot() {
                 addMessage(toolCallMessage);
 
                 // Handle tool call here
-                let results = [];
+                let results: TaskWithColumn[] = [];
 
                 for (const tool of toolNames) {
                     switch (tool) {
@@ -79,7 +82,7 @@ export default function AIChatbot() {
                 if (results.length > 0) {
                     addMessage({
                         role: "tool",
-                        content: JSON.stringify(results.length),
+                        content: JSON.stringify(results),
                         tool_call_id: toolCallId,
                     });
 
@@ -100,7 +103,11 @@ export default function AIChatbot() {
         } catch (error) {
             console.error("Error sending message:", error);
             // Add error message to store
-            toast.error("Error Connectiong To AI Assistant.");
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+            });
         } finally {
             setIsLoading(false);
         }
@@ -108,6 +115,7 @@ export default function AIChatbot() {
 
     if (!mounted) return null;
 
+    console.log(messages);
     return (
         <>
             <Button
@@ -137,8 +145,9 @@ export default function AIChatbot() {
                             {messages
                                 .filter(
                                     (message) =>
-                                        message.role === "assistant" ||
-                                        message.role === "user"
+                                        (message.role === "assistant" ||
+                                            message.role === "user") &&
+                                        message.content
                                 )
                                 .map((message, index) => (
                                     <div
