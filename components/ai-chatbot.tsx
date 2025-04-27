@@ -12,6 +12,7 @@ import { AiTextMessage } from "./ai-text-message";
 import { useToast } from "@/hooks/use-toast";
 import { tools } from "@/app/actions/openai/tool";
 import { useBoardStore } from "@/store/useBoardStore";
+import { useAiHandler } from "@/hooks/use-ai-handler";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -20,10 +21,10 @@ export default function AIChatbot() {
     const [mounted, setMounted] = useState(false);
 
     const { toast } = useToast();
+    const { handleTool } = useAiHandler();
 
     // Get messages and store functions from Zustand store
     const { addMessage, messages } = useChatStore();
-    const { columns } = useBoardStore();
 
     useEffect(() => {
         setMounted(true);
@@ -60,18 +61,11 @@ export default function AIChatbot() {
 
                 addMessage(message);
 
-                const toolToRun = tools.find(
-                    (t) => t.function.name === toolCall.function.name
-                );
-
                 const args = toolCall.function.arguments
                     ? JSON.parse(toolCall.function.arguments)
                     : undefined;
 
-                const results = await toolToRun?.handleTool?.(
-                    columns,
-                    args ?? undefined
-                );
+                const results = await handleTool(toolCall.function.name, args);
 
                 if (results && results.length > 0) {
                     addMessage({

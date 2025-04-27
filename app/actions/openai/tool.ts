@@ -1,11 +1,16 @@
-import { Column } from "@/store/useBoardStore";
-import { handleSearchTasks, SearchParamsTool, TaskWithColumn } from "./handler";
+import { SearchParamsTool } from "./handler";
 
-type ToolName = "search_tasks" | "create_task";
+export type ToolName = "search_tasks" | "create_task";
+
+type CreateParamsTool = {
+    columnName: string;
+    taskName: string;
+    description?: string;
+};
 
 export type ToolParamsMap = {
     search_tasks: SearchParamsTool;
-    create_task: void;
+    create_task: CreateParamsTool;
 };
 
 type AiTool<Name extends ToolName = ToolName> = {
@@ -15,10 +20,6 @@ type AiTool<Name extends ToolName = ToolName> = {
         parameters: any;
     };
     type: "function";
-    handleTool?: (
-        board: Column[],
-        params: ToolParamsMap[Name]
-    ) => Promise<TaskWithColumn[]>;
 };
 
 export const searchTool: AiTool<"search_tasks"> = {
@@ -38,9 +39,6 @@ export const searchTool: AiTool<"search_tasks"> = {
             },
             required: [],
         },
-    },
-    handleTool: async (board) => {
-        return await handleSearchTasks(board);
     },
 };
 
@@ -66,15 +64,10 @@ export const createTicketTool: AiTool<"create_task"> = {
                     description:
                         "A brief description of what the task is about",
                 },
-                dueDate: {
-                    type: "string",
-                    format: "date",
-                    description: "Optional due date in YYYY-MM-DD format",
-                },
             },
             required: ["columnName", "taskName"],
         },
     },
 };
 
-export const tools = [searchTool];
+export const tools = [searchTool, createTicketTool];
