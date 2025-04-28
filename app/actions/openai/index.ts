@@ -34,10 +34,7 @@ export const handleAiCall = async (
 
         console.log(assistantMessage);
 
-        if (
-            assistantMessage.finish_reason == "tool_calls" &&
-            assistantMessage.message.tool_calls
-        ) {
+        if (assistantMessage.message.tool_calls) {
             const toolCalls = assistantMessage.message.tool_calls;
 
             return {

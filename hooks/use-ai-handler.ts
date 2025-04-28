@@ -5,6 +5,7 @@ import {
     ToolName,
     ToolParamsMap,
 } from "@/app/actions/openai/tool";
+import { generateUUID } from "@/lib/utils";
 import { Column, Task, useBoardStore } from "@/store/useBoardStore";
 
 export type SearchParamsTool = {
@@ -50,7 +51,7 @@ export const useAiHandler = () => {
         }
 
         const task = {
-            id: (columns.length + 1).toString(),
+            id: generateUUID(),
             title: args.taskName,
             description: args.description,
         };
@@ -110,6 +111,13 @@ export const useAiHandler = () => {
             (task) => task.id !== taskToDelete?.id
         );
 
+        console.log(tasks);
+
+        if (!tasks) {
+            console.log("Could not find tasks", tasks);
+            return [taskToDelete];
+        }
+
         columns[boardIndex].tasks = tasks;
 
         updateColumns(columns);
@@ -130,6 +138,7 @@ export const useAiHandler = () => {
 
             case "remove_task":
                 return handleRemoveTask(args as RemoveParamTool);
+
             default:
                 throw new Error("No Tool Handler Found!");
                 return [];

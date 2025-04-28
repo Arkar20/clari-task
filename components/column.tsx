@@ -21,6 +21,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { useState, memo } from "react";
+import { generateUUID } from "@/lib/utils";
 
 interface ColumnProps {
     columnId: string;
@@ -65,7 +66,7 @@ const Column = memo(function Column({
         if (!column || !newTaskTitle.trim()) return;
 
         const newTask: Task = {
-            id: `task-${Date.now()}`,
+            id: generateUUID(),
             title: newTaskTitle.trim(),
             description: newTaskDescription.trim() || undefined,
         };

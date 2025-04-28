@@ -46,6 +46,9 @@ export type ToolParamsMap = {
     remove_task: {
         taskId: string;
     };
+    create_bulk_tasks: CreateParamsTool & {
+        count: string;
+    };
 };
 
 type AiTool<Name extends ToolName = ToolName> = {
@@ -81,7 +84,8 @@ export const createTicketTool: AiTool<"create_task"> = {
     type: "function",
     function: {
         name: "create_task",
-        description: "Create a new task/ticket in a specific column",
+        description:
+            "Create a new task/ticket in a specific column.Limit the action for one record.",
         parameters: {
             type: "object",
             properties: {
@@ -104,6 +108,7 @@ export const createTicketTool: AiTool<"create_task"> = {
         },
     },
 };
+
 export const findTaskTool: AiTool<"find_task"> = {
     type: "function",
     function: {
@@ -138,7 +143,7 @@ export const removeTaskTool: AiTool<"remove_task"> = {
     function: {
         name: "remove_task",
         description:
-            "Remove a task by its ID. Get the ids from find_task tool.",
+            "Remove a task by its ID. Get the ids from find_task tool. Limit the action for one record. ",
         parameters: {
             type: "object",
             properties: {
@@ -157,4 +162,5 @@ export const tools = [
     createTicketTool,
     findTaskTool,
     removeTaskTool,
+    createBulkTicketTool,
 ];

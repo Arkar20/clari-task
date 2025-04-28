@@ -17,6 +17,7 @@ import {
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { useBoardStore } from "@/store/useBoardStore";
+import { generateUUID } from "@/lib/utils";
 
 interface Task {
     id: string;
@@ -68,7 +69,7 @@ export function BoardColumn({ board, activeTask }: BoardColumnProps) {
 
         try {
             addTask(board.id, {
-                id: (columns.length + 1).toString(),    
+                id: generateUUID(),
                 title: newTaskTitle,
                 description: newTaskDescription,
             });

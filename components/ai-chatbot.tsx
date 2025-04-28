@@ -77,6 +77,8 @@ export default function AIChatbot() {
         if (response.success && response.type === "tool_call") {
             const { toolCalls, message } = response;
 
+            console.log(toolCalls);
+
             addMessage(message);
 
             for (const toolCall of toolCalls) {
