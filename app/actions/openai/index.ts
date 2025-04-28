@@ -16,7 +16,7 @@ export type AIResponse =
           type: "tool_call";
           success: boolean;
           message: OpenAI.Chat.Completions.ChatCompletionMessage;
-          toolCall: OpenAI.Chat.Completions.ChatCompletionMessageToolCall;
+          toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[];
       };
 
 export const handleAiCall = async (
@@ -32,16 +32,18 @@ export const handleAiCall = async (
 
         const assistantMessage = completion.choices[0];
 
+        console.log(assistantMessage);
+
         if (
             assistantMessage.finish_reason == "tool_calls" &&
             assistantMessage.message.tool_calls
         ) {
-            const toolCall = assistantMessage.message.tool_calls[0];
+            const toolCalls = assistantMessage.message.tool_calls;
 
             return {
                 type: "tool_call",
                 success: true,
-                toolCall,
+                toolCalls,
                 message: assistantMessage.message,
             };
         }

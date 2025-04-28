@@ -1,4 +1,10 @@
-import { ToolName, ToolParamsMap } from "@/app/actions/openai/tool";
+import {
+    CreateParamsTool,
+    FindParamTool,
+    RemoveParamTool,
+    ToolName,
+    ToolParamsMap,
+} from "@/app/actions/openai/tool";
 import { Column, Task, useBoardStore } from "@/store/useBoardStore";
 
 export type SearchParamsTool = {
@@ -10,7 +16,7 @@ export type TaskWithColumn = Task & {
 };
 
 export const useAiHandler = () => {
-    const { columns, addTask } = useBoardStore();
+    const { columns, addTask, updateColumns } = useBoardStore();
 
     const handleSearchTasks = async (
         board: Column[]
@@ -54,15 +60,76 @@ export const useAiHandler = () => {
         return [task];
     };
 
-    const handleTool = (
-        toolName: ToolName | string,
-        args: ToolParamsMap[ToolName]
-    ) => {
+    const handleFindTask = (args: ToolParamsMap["find_task"]) => {
+        console.log("finding single task", args);
+
+        // find in board
+        const board = columns.find((board) =>
+            board.title
+                .trim()
+                .toLowerCase()
+                .includes(args.columnName.trim().toLowerCase())
+        );
+
+        // find in tasks
+        const task = board?.tasks.find((task) =>
+            task.title
+                .trim()
+                .toLowerCase()
+                .includes(args.taskName.trim().toLowerCase())
+        );
+
+        console.log(task);
+
+        return [task];
+    };
+
+    const handleRemoveTask = (args: ToolParamsMap["remove_task"]) => {
+        // find in board
+        let boards = columns.flatMap((column) =>
+            column.tasks.map((task) => ({
+                ...task,
+                column: column.title,
+                task: task.title,
+                description: task.description,
+                board: column.title,
+            }))
+        );
+        const taskToDelete = boards.find((task) => task.id === args.taskId);
+
+        // update the board
+        const boardIndex = columns.findIndex(
+            (board) => board.title === taskToDelete?.column
+        );
+
+        if (boardIndex < 0) {
+            new Error("No Board Found To Delete.");
+        }
+
+        const tasks = columns[boardIndex].tasks.filter(
+            (task) => task.id !== taskToDelete?.id
+        );
+
+        columns[boardIndex].tasks = tasks;
+
+        updateColumns(columns);
+
+        return taskToDelete;
+    };
+
+    const handleTool = (toolName: ToolName, args: ToolParamsMap[ToolName]) => {
         switch (toolName) {
-            case "create_task":
-                return handleAddTask(args);
             case "search_tasks":
                 return handleSearchTasks(columns);
+
+            case "create_task":
+                return handleAddTask(args as CreateParamsTool);
+
+            case "find_task":
+                return handleFindTask(args as FindParamTool);
+
+            case "remove_task":
+                return handleRemoveTask(args as RemoveParamTool);
             default:
                 throw new Error("No Tool Handler Found!");
                 return [];

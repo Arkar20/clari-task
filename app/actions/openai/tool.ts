@@ -1,8 +1,35 @@
 import { SearchParamsTool } from "./handler";
 
-export type ToolName = "search_tasks" | "create_task";
+type Tool =
+    | {
+          name: "search_tasks";
+          params: SearchParamsTool;
+      }
+    | {
+          name: "create_task";
+          params: CreateParamsTool;
+      }
+    | {
+          name: "find_task";
+          params: FindParamTool;
+      }
+    | {
+          name: "remove_task";
+          params: RemoveParamTool;
+      };
 
-type CreateParamsTool = {
+export type RemoveParamTool = {
+    taskId: string;
+};
+
+export type FindParamTool = {
+    columnName: string;
+    taskName: string;
+    description?: string;
+};
+export type ToolName = Tool extends { name: infer Name } ? Name : never;
+
+export type CreateParamsTool = {
     columnName: string;
     taskName: string;
     description?: string;
@@ -11,6 +38,14 @@ type CreateParamsTool = {
 export type ToolParamsMap = {
     search_tasks: SearchParamsTool;
     create_task: CreateParamsTool;
+    find_task: {
+        columnName: string;
+        taskName: string;
+        description?: string;
+    };
+    remove_task: {
+        taskId: string;
+    };
 };
 
 type AiTool<Name extends ToolName = ToolName> = {
@@ -69,5 +104,57 @@ export const createTicketTool: AiTool<"create_task"> = {
         },
     },
 };
+export const findTaskTool: AiTool<"find_task"> = {
+    type: "function",
+    function: {
+        name: "find_task",
+        description:
+            "Find a task by column name, task name, or description and return its ID",
+        parameters: {
+            type: "object",
+            properties: {
+                columnName: {
+                    type: "string",
+                    description:
+                        "The name of the column where the task might be located",
+                },
+                taskName: {
+                    type: "string",
+                    description: "The exact or partial name of the task",
+                },
+                description: {
+                    type: "string",
+                    description:
+                        "A keyword or phrase to search in the task's description",
+                },
+            },
+            required: ["columnName", "taskName"],
+        },
+    },
+};
 
-export const tools = [searchTool, createTicketTool];
+export const removeTaskTool: AiTool<"remove_task"> = {
+    type: "function",
+    function: {
+        name: "remove_task",
+        description:
+            "Remove a task by its ID. Get the ids from find_task tool.",
+        parameters: {
+            type: "object",
+            properties: {
+                taskId: {
+                    type: "string",
+                    description: "The ID of the task to remove",
+                },
+            },
+            required: ["taskId"],
+        },
+    },
+};
+
+export const tools = [
+    searchTool,
+    createTicketTool,
+    findTaskTool,
+    removeTaskTool,
+];

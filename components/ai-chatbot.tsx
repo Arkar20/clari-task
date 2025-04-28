@@ -10,9 +10,10 @@ import { useChatStore } from "@/store/useChatStore";
 import { prepareMessages } from "@/lib/ai/index";
 import { AiTextMessage } from "./ai-text-message";
 import { useToast } from "@/hooks/use-toast";
-import { tools } from "@/app/actions/openai/tool";
+import { ToolName, tools } from "@/app/actions/openai/tool";
 import { useBoardStore } from "@/store/useBoardStore";
 import { useAiHandler } from "@/hooks/use-ai-handler";
+import { AIResponse } from "@/app/actions/openai";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -49,43 +50,7 @@ export default function AIChatbot() {
             // // call open ai api
             const response = await handleAIChat(messages);
 
-            if (response.success && response.type === "message") {
-                addMessage({
-                    role: "assistant",
-                    content: response.message,
-                });
-            }
-
-            if (response.success && response.type === "tool_call") {
-                const { toolCall, message } = response;
-
-                addMessage(message);
-
-                const args = toolCall.function.arguments
-                    ? JSON.parse(toolCall.function.arguments)
-                    : undefined;
-
-                const results = await handleTool(toolCall.function.name, args);
-
-                if (results && results.length > 0) {
-                    addMessage({
-                        role: "tool",
-                        content: JSON.stringify(results),
-                        tool_call_id: toolCall.id,
-                    });
-
-                    const messages = prepareMessages();
-
-                    const response = await handleAIChat(messages);
-
-                    if (response.success && response.type === "message") {
-                        addMessage({
-                            role: "assistant",
-                            content: response.message,
-                        });
-                    }
-                }
-            }
+            handleToolCall(response);
 
             // put the response to the chat history
         } catch (error) {
@@ -98,6 +63,46 @@ export default function AIChatbot() {
             });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleToolCall = async (response: AIResponse) => {
+        if (response.success && response.type === "message") {
+            addMessage({
+                role: "assistant",
+                content: response.message,
+            });
+            return;
+        }
+        if (response.success && response.type === "tool_call") {
+            const { toolCalls, message } = response;
+
+            addMessage(message);
+
+            for (const toolCall of toolCalls) {
+                const args = toolCall.function.arguments
+                    ? JSON.parse(toolCall.function.arguments)
+                    : undefined;
+
+                const results = await handleTool(
+                    toolCall.function.name as ToolName,
+                    args
+                );
+
+                if (results) {
+                    addMessage({
+                        role: "tool",
+                        content: JSON.stringify(results),
+                        tool_call_id: toolCall.id,
+                    });
+
+                    const messages = prepareMessages();
+
+                    const response = await handleAIChat(messages);
+
+                    handleToolCall(response);
+                }
+            }
         }
     };
 
