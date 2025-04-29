@@ -5,27 +5,17 @@ import { MessageSquare, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
-import { handleAIChat } from "@/app/actions/ai-chat";
-import { useChatStore } from "@/store/useChatStore";
-import { prepareMessages } from "@/lib/ai/index";
 import { AiTextMessage } from "./ai-text-message";
 import { useToast } from "@/hooks/use-toast";
-import { ToolName, tools } from "@/app/actions/openai/tool";
-import { useAiHandler } from "@/hooks/use-ai-handler";
-import { AIResponse } from "@/app/actions/openai";
 import { addMessage } from "@/app/actions/chat-message";
 
-export default function AIChatbot() {
+export default function AIChatbot({ messages }: { messages: any }) {
     const [input, setInput] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     const { toast } = useToast();
-    const { handleTool } = useAiHandler();
-
-    // Get messages and store functions from Zustand store
-    const { messages } = useChatStore();
 
     useEffect(() => {
         setMounted(true);
@@ -43,18 +33,9 @@ export default function AIChatbot() {
                 role: "user",
                 content: message,
             });
-            // Add user message to store
-
-            // const messages = prepareMessages();
-
-            // // call open ai api
-            // const response = await handleAIChat(messages);
-
-            // handleToolCall(response);
-
-            // put the response to the chat history
         } catch (error) {
             console.error("Error sending message:", error);
+
             // Add error message to store
             toast({
                 variant: "destructive",
@@ -136,12 +117,12 @@ export default function AIChatbot() {
                         <div className="space-y-4">
                             {messages
                                 .filter(
-                                    (message) =>
+                                    (message: any) =>
                                         (message.role === "assistant" ||
                                             message.role === "user") &&
                                         message.content
                                 )
-                                .map((message, index) => (
+                                .map((message: any, index: number) => (
                                     <div
                                         key={index}
                                         className={`flex ${
