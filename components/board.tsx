@@ -31,7 +31,6 @@ import {
 import { Input } from "./ui/input";
 import { AnimatePresence, motion } from "framer-motion";
 import { useBoardStore } from "@/store/useBoardStore";
-import AIChatbot from "./ai-chatbot";
 
 interface Task {
     id: string;
@@ -328,8 +327,6 @@ export default function Board() {
                     )}
                 </DragOverlay>
             </DndContext>
-
-            <AIChatbot />
         </div>
     );
 }

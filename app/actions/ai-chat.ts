@@ -10,9 +10,8 @@ export async function handleAIChat(messages: any): Promise<AIResponse> {
         return response;
     } catch (error) {
         return {
-            type: "message",
             success: false,
-            message: "Error",
+            error: "Error",
         };
     }
 }
