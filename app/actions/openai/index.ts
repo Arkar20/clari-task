@@ -9,14 +9,18 @@ const openai = new OpenAI({
 export type AIResponse =
     | {
           type: "message";
-          success: boolean;
+          success: true;
           message: string;
       }
     | {
           type: "tool_call";
-          success: boolean;
+          success: true;
           message: OpenAI.Chat.Completions.ChatCompletionMessage;
           toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[];
+      }
+    | {
+          success: false;
+          error: any;
       };
 
 export const handleAiCall = async (
@@ -31,8 +35,6 @@ export const handleAiCall = async (
         });
 
         const assistantMessage = completion.choices[0];
-
-        console.log(assistantMessage);
 
         if (assistantMessage.message.tool_calls) {
             const toolCalls = assistantMessage.message.tool_calls;

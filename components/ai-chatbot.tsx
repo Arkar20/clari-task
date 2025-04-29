@@ -8,12 +8,17 @@ import { ScrollArea } from "./ui/scroll-area";
 import { AiTextMessage } from "./ai-text-message";
 import { useToast } from "@/hooks/use-toast";
 import { addMessage } from "@/app/actions/chat-message";
+import { AIResponse } from "@/app/actions/openai";
+import { useAiHandler } from "@/hooks/use-ai-handler";
+import { ToolName } from "@/app/actions/openai/tool";
 
 export default function AIChatbot({ messages }: { messages: any }) {
     const [input, setInput] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
+
+    const { handleTool } = useAiHandler();
 
     const { toast } = useToast();
 
@@ -29,10 +34,16 @@ export default function AIChatbot({ messages }: { messages: any }) {
         setIsLoading(true);
 
         try {
-            await addMessage("1", {
+            const res = await addMessage({
                 role: "user",
                 content: message,
             });
+
+            if (!res) {
+                throw new Error("Error Conmunicating with AI Bot ");
+            }
+
+            handleToolCall(res);
         } catch (error) {
             console.error("Error sending message:", error);
 
@@ -47,45 +58,41 @@ export default function AIChatbot({ messages }: { messages: any }) {
         }
     };
 
-    // const handleToolCall = async (response: AIResponse) => {
-    //     if (response.success && response.type === "message") {
-    //         addMessage({
-    //             role: "assistant",
-    //             content: response.message,
-    //         });
-    //         return;
-    //     }
-    //     if (response.success && response.type === "tool_call") {
-    //         const { toolCalls, message } = response;
+    const handleToolCall = async (response: AIResponse) => {
+        if (response.success && response.type === "message") {
+            addMessage({
+                role: "assistant",
+                content: response.message,
+            });
+            return;
+        }
+        if (response.success && response.type === "tool_call") {
+            const { toolCalls, message } = response;
 
-    //         addMessage(message);
+            addMessage(message);
 
-    //         for (const toolCall of toolCalls) {
-    //             const args = toolCall.function.arguments
-    //                 ? JSON.parse(toolCall.function.arguments)
-    //                 : undefined;
+            for (const toolCall of toolCalls) {
+                const args = toolCall.function.arguments
+                    ? JSON.parse(toolCall.function.arguments)
+                    : undefined;
 
-    //             const results = await handleTool(
-    //                 toolCall.function.name as ToolName,
-    //                 args
-    //             );
+                const results = await handleTool(
+                    toolCall.function.name as ToolName,
+                    args
+                );
 
-    //             if (results) {
-    //                 addMessage({
-    //                     role: "tool",
-    //                     content: JSON.stringify(results),
-    //                     tool_call_id: toolCall.id,
-    //                 });
+                if (results) {
+                    addMessage({
+                        role: "tool",
+                        content: JSON.stringify(results),
+                        tool_call_id: toolCall.id,
+                    });
 
-    //                 const messages = prepareMessages();
-
-    //                 const response = await handleAIChat(messages);
-
-    //                 handleToolCall(response);
-    //             }
-    //         }
-    //     }
-    // };
+                    handleToolCall(response);
+                }
+            }
+        }
+    };
 
     if (!mounted) return null;
 

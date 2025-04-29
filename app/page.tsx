@@ -8,9 +8,6 @@ export default async function Home() {
         select: {
             data: true,
         },
-        where: {
-            chatId: "1",
-        },
     });
 
     console.log(res);

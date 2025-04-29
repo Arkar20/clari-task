@@ -26,20 +26,8 @@ model Board {
   updatedAt DateTime @updatedAt
 }
 
-model Chat {
-  id        String    @id @default(cuid())
-  title     String?
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
 model Message {
-  id     String @id @default(cuid())
-  chatId String
-  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
-
-  data Json // Entire message object (role, content, tool_call, etc.)
-
+  id        String   @id @default(cuid())
+  data      Json // Entire message object (role, content, tool_call, etc.)
   createdAt DateTime @default(now())
 }

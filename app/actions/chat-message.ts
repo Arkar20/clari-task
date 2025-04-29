@@ -1,27 +1,34 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { handleAIChat } from "./ai-chat";
+import { AIResponse } from "./openai";
 
-export async function addMessage(chatId: string, payload: any) {
+export async function addMessage(payload: any): Promise<AIResponse> {
     try {
         const newMessage = await prisma.message.create({
             data: {
-                chatId,
                 data: payload,
             },
         });
 
+        if (!newMessage) {
+            throw new Error("Message Not Created");
+        }
+
         // handle AI Call
+        const messages = await prisma.message.findMany({
+            select: {
+                data: true,
+            },
+        });
 
         // fetch all the messages
+        const aiRes = await handleAIChat(
+            messages.map((message) => message.data)
+        );
 
-        // pass the payload to AI
-
-        // save return messages
-
-        //return to frontend
-
-        return { success: true, message: newMessage };
+        return aiRes;
     } catch (error) {
         console.error("Failed to add message:", error);
         return { success: false, error: "Failed to add message" };
