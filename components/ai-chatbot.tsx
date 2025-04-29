@@ -1,7 +1,6 @@
 "use client";
 
-import { useOptimistic, useTransition } from "react";
-import { MessageSquare, X } from "lucide-react";
+import { useEffect, useOptimistic, useRef, useTransition } from "react";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { AiTextMessage } from "./ai-text-message";
@@ -15,6 +14,12 @@ export default function AIChatbot({ messages }: { messages: any }) {
 
     const [isPending, startTransition] = useTransition();
 
+    const bottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [optimisticMessages]);
+
     const addToLocalMessages = (message: any) => {
         startTransition(() => {
             addOptimisticMessage(message);
@@ -23,17 +28,9 @@ export default function AIChatbot({ messages }: { messages: any }) {
 
     return (
         <>
-            <div className="w-full max-h-[600px] bg-background border rounded-lg shadow-lg z-40 dark:border-gray-800">
+            <div className="w-full h-full bg-background border rounded-lg shadow-lg z-40 dark:border-gray-800">
                 <div className="p-4 border-b flex items-center justify-between dark:border-gray-800">
                     <h2 className="text-lg font-semibold">AI Assistant</h2>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        // onClick={() => setIsOpen(false)}
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
                 </div>
                 <ScrollArea className="h-[400px] w-full p-4">
                     <div className="space-y-4">
@@ -65,6 +62,8 @@ export default function AIChatbot({ messages }: { messages: any }) {
                                 </div>
                             ))}
                     </div>
+                    {/* 👇 Scroll target */}
+                    <div ref={bottomRef} />
                 </ScrollArea>
                 <AiChatbotCreateForm addToLocalMessages={addToLocalMessages} />
             </div>
