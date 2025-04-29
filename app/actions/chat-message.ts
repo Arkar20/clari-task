@@ -7,6 +7,12 @@ import { revalidatePath } from "next/cache";
 
 export async function addMessage(payload: any): Promise<AIResponse> {
     try {
+        const count = await prisma.message.count();
+
+        if (count > 40) {
+            await prisma.message.deleteMany();
+        }
+
         const newMessage = await prisma.message.create({
             data: {
                 data: payload,

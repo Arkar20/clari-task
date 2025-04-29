@@ -4,6 +4,7 @@ import {
     RemoveParamTool,
     ToolName,
     ToolParamsMap,
+    UpdateParamsTool,
 } from "@/app/actions/openai/tool";
 import { generateUUID } from "@/lib/utils";
 import { Column, Task, useBoardStore } from "@/store/useBoardStore";
@@ -125,6 +126,52 @@ export const useAiHandler = () => {
         return taskToDelete;
     };
 
+    const handleUpdateTask = (args: UpdateParamsTool) => {
+        // find in board
+        let boards = columns.flatMap((column) =>
+            column.tasks.map((task) => ({
+                ...task,
+                column: column.title,
+                task: task.title,
+                description: task.description,
+                board: column.title,
+            }))
+        );
+        const taskToUpdate = boards.find((task) => task.id === args.taskId);
+
+        // update the board
+        const boardIndex = columns.findIndex(
+            (board) => board.title === taskToUpdate?.column
+        );
+
+        if (boardIndex < 0) {
+            new Error("No Board Found To Delete.");
+        }
+
+        const tasks = columns[boardIndex].tasks.map((task) => {
+            if (task.id === taskToUpdate?.id) {
+                return {
+                    ...task,
+                    title: args.taskName ?? task.title,
+                    description: args.description ?? task.description,
+                };
+            }
+
+            return task;
+        });
+
+        if (!tasks) {
+            console.log("Could not find tasks", tasks);
+            return [taskToUpdate];
+        }
+
+        columns[boardIndex].tasks = tasks;
+
+        updateColumns(columns);
+
+        return taskToUpdate;
+    };
+
     const handleTool = (toolName: ToolName, args: ToolParamsMap[ToolName]) => {
         switch (toolName) {
             case "search_tasks":
@@ -138,6 +185,9 @@ export const useAiHandler = () => {
 
             case "remove_task":
                 return handleRemoveTask(args as RemoveParamTool);
+
+            case "update_task":
+                return handleUpdateTask(args as UpdateParamsTool);
 
             default:
                 throw new Error("No Tool Handler Found!");

@@ -16,6 +16,10 @@ type Tool =
     | {
           name: "remove_task";
           params: RemoveParamTool;
+      }
+    | {
+          name: "update_task";
+          params: CreateParamsTool;
       };
 
 export type RemoveParamTool = {
@@ -46,7 +50,12 @@ export type ToolParamsMap = {
     remove_task: {
         taskId: string;
     };
+    update_task: UpdateParamsTool;
 };
+
+export type UpdateParamsTool = {
+    taskId: string;
+} & CreateParamsTool;
 
 type AiTool<Name extends ToolName = ToolName> = {
     function: {
@@ -106,6 +115,38 @@ export const createTicketTool: AiTool<"create_task"> = {
     },
 };
 
+export const updateTicketTool: AiTool<"update_task"> = {
+    type: "function",
+    function: {
+        name: "update_task",
+        description:
+            "Update an existing task/ticket's name, description, or column. Limit the action to one record.",
+        parameters: {
+            type: "object",
+            properties: {
+                taskId: {
+                    type: "string",
+                    description: "The unique ID of the task to update",
+                },
+                taskName: {
+                    type: "string",
+                    description: "The new name/title for the task (optional)",
+                },
+                description: {
+                    type: "string",
+                    description: "The new description for the task (optional)",
+                },
+                columnName: {
+                    type: "string",
+                    description:
+                        "The new column to move the task to (e.g., 'In Progress') (optional)",
+                },
+            },
+            required: ["taskId"],
+        },
+    },
+};
+
 export const findTaskTool: AiTool<"find_task"> = {
     type: "function",
     function: {
@@ -159,4 +200,5 @@ export const tools = [
     createTicketTool,
     findTaskTool,
     removeTaskTool,
+    updateTicketTool,
 ];
