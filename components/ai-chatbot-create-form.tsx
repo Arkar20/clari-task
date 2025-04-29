@@ -84,7 +84,7 @@ export const AIChatbotCreateForm = ({
                 );
 
                 if (results) {
-                    addMessage({
+                    const response = await addMessage({
                         role: "tool",
                         content: JSON.stringify(results),
                         tool_call_id: toolCall.id,

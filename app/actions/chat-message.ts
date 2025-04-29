@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { handleAIChat } from "./ai-chat";
 import { AIResponse } from "./openai";
+import { revalidatePath } from "next/cache";
 
 export async function addMessage(payload: any): Promise<AIResponse> {
     try {
@@ -27,6 +28,8 @@ export async function addMessage(payload: any): Promise<AIResponse> {
         const aiRes = await handleAIChat(
             messages.map((message) => message.data)
         );
+
+        revalidatePath("/");
 
         return aiRes;
     } catch (error) {
