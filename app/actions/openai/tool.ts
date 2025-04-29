@@ -46,9 +46,6 @@ export type ToolParamsMap = {
     remove_task: {
         taskId: string;
     };
-    create_bulk_tasks: CreateParamsTool & {
-        count: string;
-    };
 };
 
 type AiTool<Name extends ToolName = ToolName> = {
@@ -162,5 +159,4 @@ export const tools = [
     createTicketTool,
     findTaskTool,
     removeTaskTool,
-    createBulkTicketTool,
 ];

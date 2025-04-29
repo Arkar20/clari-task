@@ -19,12 +19,12 @@ model Task {
   title       String
   description String?
   columnId    String
-  column      Column   @relation(fields: [columnId], references: [id])
+  column      Board    @relation(fields: [columnId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model Column {
+model Board {
   id        String   @id @default(cuid())
   title     String
   tasks     Task[]

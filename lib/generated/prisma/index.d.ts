@@ -19,10 +19,10 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
 /**
- * Model Column
+ * Model Board
  * 
  */
-export type Column = $Result.DefaultSelection<Prisma.$ColumnPayload>
+export type Board = $Result.DefaultSelection<Prisma.$BoardPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -160,14 +160,14 @@ export class PrismaClient<
   get task(): Prisma.TaskDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.column`: Exposes CRUD operations for the **Column** model.
+   * `prisma.board`: Exposes CRUD operations for the **Board** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Columns
-    * const columns = await prisma.column.findMany()
+    * // Fetch zero or more Boards
+    * const boards = await prisma.board.findMany()
     * ```
     */
-  get column(): Prisma.ColumnDelegate<ExtArgs, ClientOptions>;
+  get board(): Prisma.BoardDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -609,7 +609,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Task: 'Task',
-    Column: 'Column'
+    Board: 'Board'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -628,7 +628,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "task" | "column"
+      modelProps: "task" | "board"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -698,69 +698,69 @@ export namespace Prisma {
           }
         }
       }
-      Column: {
-        payload: Prisma.$ColumnPayload<ExtArgs>
-        fields: Prisma.ColumnFieldRefs
+      Board: {
+        payload: Prisma.$BoardPayload<ExtArgs>
+        fields: Prisma.BoardFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ColumnFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload> | null
+            args: Prisma.BoardFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ColumnFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           findFirst: {
-            args: Prisma.ColumnFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload> | null
+            args: Prisma.BoardFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ColumnFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           findMany: {
-            args: Prisma.ColumnFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>[]
+            args: Prisma.BoardFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>[]
           }
           create: {
-            args: Prisma.ColumnCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           createMany: {
-            args: Prisma.ColumnCreateManyArgs<ExtArgs>
+            args: Prisma.BoardCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           delete: {
-            args: Prisma.ColumnDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           update: {
-            args: Prisma.ColumnUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           deleteMany: {
-            args: Prisma.ColumnDeleteManyArgs<ExtArgs>
+            args: Prisma.BoardDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ColumnUpdateManyArgs<ExtArgs>
+            args: Prisma.BoardUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           upsert: {
-            args: Prisma.ColumnUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ColumnPayload>
+            args: Prisma.BoardUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BoardPayload>
           }
           aggregate: {
-            args: Prisma.ColumnAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateColumn>
+            args: Prisma.BoardAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBoard>
           }
           groupBy: {
-            args: Prisma.ColumnGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ColumnGroupByOutputType>[]
+            args: Prisma.BoardGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BoardGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ColumnCountArgs<ExtArgs>
-            result: $Utils.Optional<ColumnCountAggregateOutputType> | number
+            args: Prisma.BoardCountArgs<ExtArgs>
+            result: $Utils.Optional<BoardCountAggregateOutputType> | number
           }
         }
       }
@@ -849,7 +849,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     task?: TaskOmit
-    column?: ColumnOmit
+    board?: BoardOmit
   }
 
   /* Types for Logging */
@@ -940,32 +940,32 @@ export namespace Prisma {
 
 
   /**
-   * Count Type ColumnCountOutputType
+   * Count Type BoardCountOutputType
    */
 
-  export type ColumnCountOutputType = {
+  export type BoardCountOutputType = {
     tasks: number
   }
 
-  export type ColumnCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tasks?: boolean | ColumnCountOutputTypeCountTasksArgs
+  export type BoardCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | BoardCountOutputTypeCountTasksArgs
   }
 
   // Custom InputTypes
   /**
-   * ColumnCountOutputType without action
+   * BoardCountOutputType without action
    */
-  export type ColumnCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ColumnCountOutputType
+     * Select specific fields to fetch from the BoardCountOutputType
      */
-    select?: ColumnCountOutputTypeSelect<ExtArgs> | null
+    select?: BoardCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * ColumnCountOutputType without action
+   * BoardCountOutputType without action
    */
-  export type ColumnCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
   }
 
@@ -1146,7 +1146,7 @@ export namespace Prisma {
     columnId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    column?: boolean | ColumnDefaultArgs<ExtArgs>
+    column?: boolean | BoardDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
 
@@ -1162,13 +1162,13 @@ export namespace Prisma {
 
   export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "columnId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    column?: boolean | ColumnDefaultArgs<ExtArgs>
+    column?: boolean | BoardDefaultArgs<ExtArgs>
   }
 
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
     objects: {
-      column: Prisma.$ColumnPayload<ExtArgs>
+      column: Prisma.$BoardPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1517,7 +1517,7 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    column<T extends ColumnDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ColumnDefaultArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    column<T extends BoardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BoardDefaultArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1915,30 +1915,30 @@ export namespace Prisma {
 
 
   /**
-   * Model Column
+   * Model Board
    */
 
-  export type AggregateColumn = {
-    _count: ColumnCountAggregateOutputType | null
-    _min: ColumnMinAggregateOutputType | null
-    _max: ColumnMaxAggregateOutputType | null
+  export type AggregateBoard = {
+    _count: BoardCountAggregateOutputType | null
+    _min: BoardMinAggregateOutputType | null
+    _max: BoardMaxAggregateOutputType | null
   }
 
-  export type ColumnMinAggregateOutputType = {
+  export type BoardMinAggregateOutputType = {
     id: string | null
     title: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type ColumnMaxAggregateOutputType = {
+  export type BoardMaxAggregateOutputType = {
     id: string | null
     title: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type ColumnCountAggregateOutputType = {
+  export type BoardCountAggregateOutputType = {
     id: number
     title: number
     createdAt: number
@@ -1947,21 +1947,21 @@ export namespace Prisma {
   }
 
 
-  export type ColumnMinAggregateInputType = {
+  export type BoardMinAggregateInputType = {
     id?: true
     title?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type ColumnMaxAggregateInputType = {
+  export type BoardMaxAggregateInputType = {
     id?: true
     title?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type ColumnCountAggregateInputType = {
+  export type BoardCountAggregateInputType = {
     id?: true
     title?: true
     createdAt?: true
@@ -1969,128 +1969,128 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type ColumnAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Column to aggregate.
+     * Filter which Board to aggregate.
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Columns to fetch.
+     * Determine the order of Boards to fetch.
      */
-    orderBy?: ColumnOrderByWithRelationInput | ColumnOrderByWithRelationInput[]
+    orderBy?: BoardOrderByWithRelationInput | BoardOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ColumnWhereUniqueInput
+    cursor?: BoardWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Columns from the position of the cursor.
+     * Take `±n` Boards from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Columns.
+     * Skip the first `n` Boards.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Columns
+     * Count returned Boards
     **/
-    _count?: true | ColumnCountAggregateInputType
+    _count?: true | BoardCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ColumnMinAggregateInputType
+    _min?: BoardMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ColumnMaxAggregateInputType
+    _max?: BoardMaxAggregateInputType
   }
 
-  export type GetColumnAggregateType<T extends ColumnAggregateArgs> = {
-        [P in keyof T & keyof AggregateColumn]: P extends '_count' | 'count'
+  export type GetBoardAggregateType<T extends BoardAggregateArgs> = {
+        [P in keyof T & keyof AggregateBoard]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateColumn[P]>
-      : GetScalarType<T[P], AggregateColumn[P]>
+        : GetScalarType<T[P], AggregateBoard[P]>
+      : GetScalarType<T[P], AggregateBoard[P]>
   }
 
 
 
 
-  export type ColumnGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ColumnWhereInput
-    orderBy?: ColumnOrderByWithAggregationInput | ColumnOrderByWithAggregationInput[]
-    by: ColumnScalarFieldEnum[] | ColumnScalarFieldEnum
-    having?: ColumnScalarWhereWithAggregatesInput
+  export type BoardGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BoardWhereInput
+    orderBy?: BoardOrderByWithAggregationInput | BoardOrderByWithAggregationInput[]
+    by: BoardScalarFieldEnum[] | BoardScalarFieldEnum
+    having?: BoardScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ColumnCountAggregateInputType | true
-    _min?: ColumnMinAggregateInputType
-    _max?: ColumnMaxAggregateInputType
+    _count?: BoardCountAggregateInputType | true
+    _min?: BoardMinAggregateInputType
+    _max?: BoardMaxAggregateInputType
   }
 
-  export type ColumnGroupByOutputType = {
+  export type BoardGroupByOutputType = {
     id: string
     title: string
     createdAt: Date
     updatedAt: Date
-    _count: ColumnCountAggregateOutputType | null
-    _min: ColumnMinAggregateOutputType | null
-    _max: ColumnMaxAggregateOutputType | null
+    _count: BoardCountAggregateOutputType | null
+    _min: BoardMinAggregateOutputType | null
+    _max: BoardMaxAggregateOutputType | null
   }
 
-  type GetColumnGroupByPayload<T extends ColumnGroupByArgs> = Prisma.PrismaPromise<
+  type GetBoardGroupByPayload<T extends BoardGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ColumnGroupByOutputType, T['by']> &
+      PickEnumerable<BoardGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ColumnGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof BoardGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ColumnGroupByOutputType[P]>
-            : GetScalarType<T[P], ColumnGroupByOutputType[P]>
+              : GetScalarType<T[P], BoardGroupByOutputType[P]>
+            : GetScalarType<T[P], BoardGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ColumnSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type BoardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tasks?: boolean | Column$tasksArgs<ExtArgs>
-    _count?: boolean | ColumnCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["column"]>
+    tasks?: boolean | Board$tasksArgs<ExtArgs>
+    _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["board"]>
 
 
 
-  export type ColumnSelectScalar = {
+  export type BoardSelectScalar = {
     id?: boolean
     title?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ColumnOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "createdAt" | "updatedAt", ExtArgs["result"]["column"]>
-  export type ColumnInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tasks?: boolean | Column$tasksArgs<ExtArgs>
-    _count?: boolean | ColumnCountOutputTypeDefaultArgs<ExtArgs>
+  export type BoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
+  export type BoardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | Board$tasksArgs<ExtArgs>
+    _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
   }
 
-  export type $ColumnPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Column"
+  export type $BoardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Board"
     objects: {
       tasks: Prisma.$TaskPayload<ExtArgs>[]
     }
@@ -2099,143 +2099,143 @@ export namespace Prisma {
       title: string
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["column"]>
+    }, ExtArgs["result"]["board"]>
     composites: {}
   }
 
-  type ColumnGetPayload<S extends boolean | null | undefined | ColumnDefaultArgs> = $Result.GetResult<Prisma.$ColumnPayload, S>
+  type BoardGetPayload<S extends boolean | null | undefined | BoardDefaultArgs> = $Result.GetResult<Prisma.$BoardPayload, S>
 
-  type ColumnCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ColumnFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ColumnCountAggregateInputType | true
+  type BoardCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BoardFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BoardCountAggregateInputType | true
     }
 
-  export interface ColumnDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Column'], meta: { name: 'Column' } }
+  export interface BoardDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Board'], meta: { name: 'Board' } }
     /**
-     * Find zero or one Column that matches the filter.
-     * @param {ColumnFindUniqueArgs} args - Arguments to find a Column
+     * Find zero or one Board that matches the filter.
+     * @param {BoardFindUniqueArgs} args - Arguments to find a Board
      * @example
-     * // Get one Column
-     * const column = await prisma.column.findUnique({
+     * // Get one Board
+     * const board = await prisma.board.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ColumnFindUniqueArgs>(args: SelectSubset<T, ColumnFindUniqueArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends BoardFindUniqueArgs>(args: SelectSubset<T, BoardFindUniqueArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Column that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Board that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ColumnFindUniqueOrThrowArgs} args - Arguments to find a Column
+     * @param {BoardFindUniqueOrThrowArgs} args - Arguments to find a Board
      * @example
-     * // Get one Column
-     * const column = await prisma.column.findUniqueOrThrow({
+     * // Get one Board
+     * const board = await prisma.board.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ColumnFindUniqueOrThrowArgs>(args: SelectSubset<T, ColumnFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends BoardFindUniqueOrThrowArgs>(args: SelectSubset<T, BoardFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Column that matches the filter.
+     * Find the first Board that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnFindFirstArgs} args - Arguments to find a Column
+     * @param {BoardFindFirstArgs} args - Arguments to find a Board
      * @example
-     * // Get one Column
-     * const column = await prisma.column.findFirst({
+     * // Get one Board
+     * const board = await prisma.board.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ColumnFindFirstArgs>(args?: SelectSubset<T, ColumnFindFirstArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends BoardFindFirstArgs>(args?: SelectSubset<T, BoardFindFirstArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Column that matches the filter or
+     * Find the first Board that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnFindFirstOrThrowArgs} args - Arguments to find a Column
+     * @param {BoardFindFirstOrThrowArgs} args - Arguments to find a Board
      * @example
-     * // Get one Column
-     * const column = await prisma.column.findFirstOrThrow({
+     * // Get one Board
+     * const board = await prisma.board.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ColumnFindFirstOrThrowArgs>(args?: SelectSubset<T, ColumnFindFirstOrThrowArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends BoardFindFirstOrThrowArgs>(args?: SelectSubset<T, BoardFindFirstOrThrowArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Columns that matches the filter.
+     * Find zero or more Boards that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {BoardFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Columns
-     * const columns = await prisma.column.findMany()
+     * // Get all Boards
+     * const boards = await prisma.board.findMany()
      * 
-     * // Get first 10 Columns
-     * const columns = await prisma.column.findMany({ take: 10 })
+     * // Get first 10 Boards
+     * const boards = await prisma.board.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const columnWithIdOnly = await prisma.column.findMany({ select: { id: true } })
+     * const boardWithIdOnly = await prisma.board.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends ColumnFindManyArgs>(args?: SelectSubset<T, ColumnFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends BoardFindManyArgs>(args?: SelectSubset<T, BoardFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Column.
-     * @param {ColumnCreateArgs} args - Arguments to create a Column.
+     * Create a Board.
+     * @param {BoardCreateArgs} args - Arguments to create a Board.
      * @example
-     * // Create one Column
-     * const Column = await prisma.column.create({
+     * // Create one Board
+     * const Board = await prisma.board.create({
      *   data: {
-     *     // ... data to create a Column
+     *     // ... data to create a Board
      *   }
      * })
      * 
      */
-    create<T extends ColumnCreateArgs>(args: SelectSubset<T, ColumnCreateArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends BoardCreateArgs>(args: SelectSubset<T, BoardCreateArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Columns.
-     * @param {ColumnCreateManyArgs} args - Arguments to create many Columns.
+     * Create many Boards.
+     * @param {BoardCreateManyArgs} args - Arguments to create many Boards.
      * @example
-     * // Create many Columns
-     * const column = await prisma.column.createMany({
+     * // Create many Boards
+     * const board = await prisma.board.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ColumnCreateManyArgs>(args?: SelectSubset<T, ColumnCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends BoardCreateManyArgs>(args?: SelectSubset<T, BoardCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Delete a Column.
-     * @param {ColumnDeleteArgs} args - Arguments to delete one Column.
+     * Delete a Board.
+     * @param {BoardDeleteArgs} args - Arguments to delete one Board.
      * @example
-     * // Delete one Column
-     * const Column = await prisma.column.delete({
+     * // Delete one Board
+     * const Board = await prisma.board.delete({
      *   where: {
-     *     // ... filter to delete one Column
+     *     // ... filter to delete one Board
      *   }
      * })
      * 
      */
-    delete<T extends ColumnDeleteArgs>(args: SelectSubset<T, ColumnDeleteArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends BoardDeleteArgs>(args: SelectSubset<T, BoardDeleteArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Column.
-     * @param {ColumnUpdateArgs} args - Arguments to update one Column.
+     * Update one Board.
+     * @param {BoardUpdateArgs} args - Arguments to update one Board.
      * @example
-     * // Update one Column
-     * const column = await prisma.column.update({
+     * // Update one Board
+     * const board = await prisma.board.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -2245,30 +2245,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ColumnUpdateArgs>(args: SelectSubset<T, ColumnUpdateArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends BoardUpdateArgs>(args: SelectSubset<T, BoardUpdateArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Columns.
-     * @param {ColumnDeleteManyArgs} args - Arguments to filter Columns to delete.
+     * Delete zero or more Boards.
+     * @param {BoardDeleteManyArgs} args - Arguments to filter Boards to delete.
      * @example
-     * // Delete a few Columns
-     * const { count } = await prisma.column.deleteMany({
+     * // Delete a few Boards
+     * const { count } = await prisma.board.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ColumnDeleteManyArgs>(args?: SelectSubset<T, ColumnDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends BoardDeleteManyArgs>(args?: SelectSubset<T, BoardDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Columns.
+     * Update zero or more Boards.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {BoardUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Columns
-     * const column = await prisma.column.updateMany({
+     * // Update many Boards
+     * const board = await prisma.board.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -2278,56 +2278,56 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ColumnUpdateManyArgs>(args: SelectSubset<T, ColumnUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends BoardUpdateManyArgs>(args: SelectSubset<T, BoardUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one Column.
-     * @param {ColumnUpsertArgs} args - Arguments to update or create a Column.
+     * Create or update one Board.
+     * @param {BoardUpsertArgs} args - Arguments to update or create a Board.
      * @example
-     * // Update or create a Column
-     * const column = await prisma.column.upsert({
+     * // Update or create a Board
+     * const board = await prisma.board.upsert({
      *   create: {
-     *     // ... data to create a Column
+     *     // ... data to create a Board
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Column we want to update
+     *     // ... the filter for the Board we want to update
      *   }
      * })
      */
-    upsert<T extends ColumnUpsertArgs>(args: SelectSubset<T, ColumnUpsertArgs<ExtArgs>>): Prisma__ColumnClient<$Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends BoardUpsertArgs>(args: SelectSubset<T, BoardUpsertArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Columns.
+     * Count the number of Boards.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnCountArgs} args - Arguments to filter Columns to count.
+     * @param {BoardCountArgs} args - Arguments to filter Boards to count.
      * @example
-     * // Count the number of Columns
-     * const count = await prisma.column.count({
+     * // Count the number of Boards
+     * const count = await prisma.board.count({
      *   where: {
-     *     // ... the filter for the Columns we want to count
+     *     // ... the filter for the Boards we want to count
      *   }
      * })
     **/
-    count<T extends ColumnCountArgs>(
-      args?: Subset<T, ColumnCountArgs>,
+    count<T extends BoardCountArgs>(
+      args?: Subset<T, BoardCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ColumnCountAggregateOutputType>
+          : GetScalarType<T['select'], BoardCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Column.
+     * Allows you to perform aggregations operations on a Board.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {BoardAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -2347,13 +2347,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ColumnAggregateArgs>(args: Subset<T, ColumnAggregateArgs>): Prisma.PrismaPromise<GetColumnAggregateType<T>>
+    aggregate<T extends BoardAggregateArgs>(args: Subset<T, BoardAggregateArgs>): Prisma.PrismaPromise<GetBoardAggregateType<T>>
 
     /**
-     * Group by Column.
+     * Group by Board.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ColumnGroupByArgs} args - Group by arguments.
+     * @param {BoardGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -2368,14 +2368,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ColumnGroupByArgs,
+      T extends BoardGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ColumnGroupByArgs['orderBy'] }
-        : { orderBy?: ColumnGroupByArgs['orderBy'] },
+        ? { orderBy: BoardGroupByArgs['orderBy'] }
+        : { orderBy?: BoardGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -2424,22 +2424,22 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ColumnGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetColumnGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, BoardGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBoardGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Column model
+   * Fields of the Board model
    */
-  readonly fields: ColumnFieldRefs;
+  readonly fields: BoardFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Column.
+   * The delegate class that acts as a "Promise-like" for Board.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ColumnClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__BoardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tasks<T extends Column$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Column$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tasks<T extends Board$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Board$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2466,359 +2466,359 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Column model
+   * Fields of the Board model
    */
-  interface ColumnFieldRefs {
-    readonly id: FieldRef<"Column", 'String'>
-    readonly title: FieldRef<"Column", 'String'>
-    readonly createdAt: FieldRef<"Column", 'DateTime'>
-    readonly updatedAt: FieldRef<"Column", 'DateTime'>
+  interface BoardFieldRefs {
+    readonly id: FieldRef<"Board", 'String'>
+    readonly title: FieldRef<"Board", 'String'>
+    readonly createdAt: FieldRef<"Board", 'DateTime'>
+    readonly updatedAt: FieldRef<"Board", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Column findUnique
+   * Board findUnique
    */
-  export type ColumnFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter, which Column to fetch.
+     * Filter, which Board to fetch.
      */
-    where: ColumnWhereUniqueInput
+    where: BoardWhereUniqueInput
   }
 
   /**
-   * Column findUniqueOrThrow
+   * Board findUniqueOrThrow
    */
-  export type ColumnFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter, which Column to fetch.
+     * Filter, which Board to fetch.
      */
-    where: ColumnWhereUniqueInput
+    where: BoardWhereUniqueInput
   }
 
   /**
-   * Column findFirst
+   * Board findFirst
    */
-  export type ColumnFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter, which Column to fetch.
+     * Filter, which Board to fetch.
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Columns to fetch.
+     * Determine the order of Boards to fetch.
      */
-    orderBy?: ColumnOrderByWithRelationInput | ColumnOrderByWithRelationInput[]
+    orderBy?: BoardOrderByWithRelationInput | BoardOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Columns.
+     * Sets the position for searching for Boards.
      */
-    cursor?: ColumnWhereUniqueInput
+    cursor?: BoardWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Columns from the position of the cursor.
+     * Take `±n` Boards from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Columns.
+     * Skip the first `n` Boards.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Columns.
+     * Filter by unique combinations of Boards.
      */
-    distinct?: ColumnScalarFieldEnum | ColumnScalarFieldEnum[]
+    distinct?: BoardScalarFieldEnum | BoardScalarFieldEnum[]
   }
 
   /**
-   * Column findFirstOrThrow
+   * Board findFirstOrThrow
    */
-  export type ColumnFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter, which Column to fetch.
+     * Filter, which Board to fetch.
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Columns to fetch.
+     * Determine the order of Boards to fetch.
      */
-    orderBy?: ColumnOrderByWithRelationInput | ColumnOrderByWithRelationInput[]
+    orderBy?: BoardOrderByWithRelationInput | BoardOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Columns.
+     * Sets the position for searching for Boards.
      */
-    cursor?: ColumnWhereUniqueInput
+    cursor?: BoardWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Columns from the position of the cursor.
+     * Take `±n` Boards from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Columns.
+     * Skip the first `n` Boards.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Columns.
+     * Filter by unique combinations of Boards.
      */
-    distinct?: ColumnScalarFieldEnum | ColumnScalarFieldEnum[]
+    distinct?: BoardScalarFieldEnum | BoardScalarFieldEnum[]
   }
 
   /**
-   * Column findMany
+   * Board findMany
    */
-  export type ColumnFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter, which Columns to fetch.
+     * Filter, which Boards to fetch.
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Columns to fetch.
+     * Determine the order of Boards to fetch.
      */
-    orderBy?: ColumnOrderByWithRelationInput | ColumnOrderByWithRelationInput[]
+    orderBy?: BoardOrderByWithRelationInput | BoardOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Columns.
+     * Sets the position for listing Boards.
      */
-    cursor?: ColumnWhereUniqueInput
+    cursor?: BoardWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Columns from the position of the cursor.
+     * Take `±n` Boards from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Columns.
+     * Skip the first `n` Boards.
      */
     skip?: number
-    distinct?: ColumnScalarFieldEnum | ColumnScalarFieldEnum[]
+    distinct?: BoardScalarFieldEnum | BoardScalarFieldEnum[]
   }
 
   /**
-   * Column create
+   * Board create
    */
-  export type ColumnCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * The data needed to create a Column.
+     * The data needed to create a Board.
      */
-    data: XOR<ColumnCreateInput, ColumnUncheckedCreateInput>
+    data: XOR<BoardCreateInput, BoardUncheckedCreateInput>
   }
 
   /**
-   * Column createMany
+   * Board createMany
    */
-  export type ColumnCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Columns.
+     * The data used to create many Boards.
      */
-    data: ColumnCreateManyInput | ColumnCreateManyInput[]
+    data: BoardCreateManyInput | BoardCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Column update
+   * Board update
    */
-  export type ColumnUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * The data needed to update a Column.
+     * The data needed to update a Board.
      */
-    data: XOR<ColumnUpdateInput, ColumnUncheckedUpdateInput>
+    data: XOR<BoardUpdateInput, BoardUncheckedUpdateInput>
     /**
-     * Choose, which Column to update.
+     * Choose, which Board to update.
      */
-    where: ColumnWhereUniqueInput
+    where: BoardWhereUniqueInput
   }
 
   /**
-   * Column updateMany
+   * Board updateMany
    */
-  export type ColumnUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Columns.
+     * The data used to update Boards.
      */
-    data: XOR<ColumnUpdateManyMutationInput, ColumnUncheckedUpdateManyInput>
+    data: XOR<BoardUpdateManyMutationInput, BoardUncheckedUpdateManyInput>
     /**
-     * Filter which Columns to update
+     * Filter which Boards to update
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
-     * Limit how many Columns to update.
+     * Limit how many Boards to update.
      */
     limit?: number
   }
 
   /**
-   * Column upsert
+   * Board upsert
    */
-  export type ColumnUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * The filter to search for the Column to update in case it exists.
+     * The filter to search for the Board to update in case it exists.
      */
-    where: ColumnWhereUniqueInput
+    where: BoardWhereUniqueInput
     /**
-     * In case the Column found by the `where` argument doesn't exist, create a new Column with this data.
+     * In case the Board found by the `where` argument doesn't exist, create a new Board with this data.
      */
-    create: XOR<ColumnCreateInput, ColumnUncheckedCreateInput>
+    create: XOR<BoardCreateInput, BoardUncheckedCreateInput>
     /**
-     * In case the Column was found with the provided `where` argument, update it with this data.
+     * In case the Board was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ColumnUpdateInput, ColumnUncheckedUpdateInput>
+    update: XOR<BoardUpdateInput, BoardUncheckedUpdateInput>
   }
 
   /**
-   * Column delete
+   * Board delete
    */
-  export type ColumnDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
     /**
-     * Filter which Column to delete.
+     * Filter which Board to delete.
      */
-    where: ColumnWhereUniqueInput
+    where: BoardWhereUniqueInput
   }
 
   /**
-   * Column deleteMany
+   * Board deleteMany
    */
-  export type ColumnDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Columns to delete
+     * Filter which Boards to delete
      */
-    where?: ColumnWhereInput
+    where?: BoardWhereInput
     /**
-     * Limit how many Columns to delete.
+     * Limit how many Boards to delete.
      */
     limit?: number
   }
 
   /**
-   * Column.tasks
+   * Board.tasks
    */
-  export type Column$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Board$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Task
      */
@@ -2840,21 +2840,21 @@ export namespace Prisma {
   }
 
   /**
-   * Column without action
+   * Board without action
    */
-  export type ColumnDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BoardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Column
+     * Select specific fields to fetch from the Board
      */
-    select?: ColumnSelect<ExtArgs> | null
+    select?: BoardSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Column
+     * Omit specific fields from the Board
      */
-    omit?: ColumnOmit<ExtArgs> | null
+    omit?: BoardOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ColumnInclude<ExtArgs> | null
+    include?: BoardInclude<ExtArgs> | null
   }
 
 
@@ -2884,14 +2884,14 @@ export namespace Prisma {
   export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
-  export const ColumnScalarFieldEnum: {
+  export const BoardScalarFieldEnum: {
     id: 'id',
     title: 'title',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
-  export type ColumnScalarFieldEnum = (typeof ColumnScalarFieldEnum)[keyof typeof ColumnScalarFieldEnum]
+  export type BoardScalarFieldEnum = (typeof BoardScalarFieldEnum)[keyof typeof BoardScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -2920,12 +2920,12 @@ export namespace Prisma {
   export type TaskOrderByRelevanceFieldEnum = (typeof TaskOrderByRelevanceFieldEnum)[keyof typeof TaskOrderByRelevanceFieldEnum]
 
 
-  export const ColumnOrderByRelevanceFieldEnum: {
+  export const BoardOrderByRelevanceFieldEnum: {
     id: 'id',
     title: 'title'
   };
 
-  export type ColumnOrderByRelevanceFieldEnum = (typeof ColumnOrderByRelevanceFieldEnum)[keyof typeof ColumnOrderByRelevanceFieldEnum]
+  export type BoardOrderByRelevanceFieldEnum = (typeof BoardOrderByRelevanceFieldEnum)[keyof typeof BoardOrderByRelevanceFieldEnum]
 
 
   /**
@@ -2967,7 +2967,7 @@ export namespace Prisma {
     columnId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    column?: XOR<ColumnScalarRelationFilter, ColumnWhereInput>
+    column?: XOR<BoardScalarRelationFilter, BoardWhereInput>
   }
 
   export type TaskOrderByWithRelationInput = {
@@ -2977,7 +2977,7 @@ export namespace Prisma {
     columnId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    column?: ColumnOrderByWithRelationInput
+    column?: BoardOrderByWithRelationInput
     _relevance?: TaskOrderByRelevanceInput
   }
 
@@ -2991,7 +2991,7 @@ export namespace Prisma {
     columnId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    column?: XOR<ColumnScalarRelationFilter, ColumnWhereInput>
+    column?: XOR<BoardScalarRelationFilter, BoardWhereInput>
   }, "id">
 
   export type TaskOrderByWithAggregationInput = {
@@ -3018,55 +3018,55 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
   }
 
-  export type ColumnWhereInput = {
-    AND?: ColumnWhereInput | ColumnWhereInput[]
-    OR?: ColumnWhereInput[]
-    NOT?: ColumnWhereInput | ColumnWhereInput[]
-    id?: StringFilter<"Column"> | string
-    title?: StringFilter<"Column"> | string
-    createdAt?: DateTimeFilter<"Column"> | Date | string
-    updatedAt?: DateTimeFilter<"Column"> | Date | string
+  export type BoardWhereInput = {
+    AND?: BoardWhereInput | BoardWhereInput[]
+    OR?: BoardWhereInput[]
+    NOT?: BoardWhereInput | BoardWhereInput[]
+    id?: StringFilter<"Board"> | string
+    title?: StringFilter<"Board"> | string
+    createdAt?: DateTimeFilter<"Board"> | Date | string
+    updatedAt?: DateTimeFilter<"Board"> | Date | string
     tasks?: TaskListRelationFilter
   }
 
-  export type ColumnOrderByWithRelationInput = {
+  export type BoardOrderByWithRelationInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tasks?: TaskOrderByRelationAggregateInput
-    _relevance?: ColumnOrderByRelevanceInput
+    _relevance?: BoardOrderByRelevanceInput
   }
 
-  export type ColumnWhereUniqueInput = Prisma.AtLeast<{
+  export type BoardWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: ColumnWhereInput | ColumnWhereInput[]
-    OR?: ColumnWhereInput[]
-    NOT?: ColumnWhereInput | ColumnWhereInput[]
-    title?: StringFilter<"Column"> | string
-    createdAt?: DateTimeFilter<"Column"> | Date | string
-    updatedAt?: DateTimeFilter<"Column"> | Date | string
+    AND?: BoardWhereInput | BoardWhereInput[]
+    OR?: BoardWhereInput[]
+    NOT?: BoardWhereInput | BoardWhereInput[]
+    title?: StringFilter<"Board"> | string
+    createdAt?: DateTimeFilter<"Board"> | Date | string
+    updatedAt?: DateTimeFilter<"Board"> | Date | string
     tasks?: TaskListRelationFilter
   }, "id">
 
-  export type ColumnOrderByWithAggregationInput = {
+  export type BoardOrderByWithAggregationInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: ColumnCountOrderByAggregateInput
-    _max?: ColumnMaxOrderByAggregateInput
-    _min?: ColumnMinOrderByAggregateInput
+    _count?: BoardCountOrderByAggregateInput
+    _max?: BoardMaxOrderByAggregateInput
+    _min?: BoardMinOrderByAggregateInput
   }
 
-  export type ColumnScalarWhereWithAggregatesInput = {
-    AND?: ColumnScalarWhereWithAggregatesInput | ColumnScalarWhereWithAggregatesInput[]
-    OR?: ColumnScalarWhereWithAggregatesInput[]
-    NOT?: ColumnScalarWhereWithAggregatesInput | ColumnScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Column"> | string
-    title?: StringWithAggregatesFilter<"Column"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Column"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Column"> | Date | string
+  export type BoardScalarWhereWithAggregatesInput = {
+    AND?: BoardScalarWhereWithAggregatesInput | BoardScalarWhereWithAggregatesInput[]
+    OR?: BoardScalarWhereWithAggregatesInput[]
+    NOT?: BoardScalarWhereWithAggregatesInput | BoardScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Board"> | string
+    title?: StringWithAggregatesFilter<"Board"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Board"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Board"> | Date | string
   }
 
   export type TaskCreateInput = {
@@ -3075,7 +3075,7 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    column: ColumnCreateNestedOneWithoutTasksInput
+    column: BoardCreateNestedOneWithoutTasksInput
   }
 
   export type TaskUncheckedCreateInput = {
@@ -3093,7 +3093,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    column?: ColumnUpdateOneRequiredWithoutTasksNestedInput
+    column?: BoardUpdateOneRequiredWithoutTasksNestedInput
   }
 
   export type TaskUncheckedUpdateInput = {
@@ -3131,7 +3131,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ColumnCreateInput = {
+  export type BoardCreateInput = {
     id?: string
     title: string
     createdAt?: Date | string
@@ -3139,7 +3139,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutColumnInput
   }
 
-  export type ColumnUncheckedCreateInput = {
+  export type BoardUncheckedCreateInput = {
     id?: string
     title: string
     createdAt?: Date | string
@@ -3147,7 +3147,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutColumnInput
   }
 
-  export type ColumnUpdateInput = {
+  export type BoardUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3155,7 +3155,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutColumnNestedInput
   }
 
-  export type ColumnUncheckedUpdateInput = {
+  export type BoardUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3163,21 +3163,21 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutColumnNestedInput
   }
 
-  export type ColumnCreateManyInput = {
+  export type BoardCreateManyInput = {
     id?: string
     title: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ColumnUpdateManyMutationInput = {
+  export type BoardUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ColumnUncheckedUpdateManyInput = {
+  export type BoardUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3225,9 +3225,9 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type ColumnScalarRelationFilter = {
-    is?: ColumnWhereInput
-    isNot?: ColumnWhereInput
+  export type BoardScalarRelationFilter = {
+    is?: BoardWhereInput
+    isNot?: BoardWhereInput
   }
 
   export type SortOrderInput = {
@@ -3328,37 +3328,37 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type ColumnOrderByRelevanceInput = {
-    fields: ColumnOrderByRelevanceFieldEnum | ColumnOrderByRelevanceFieldEnum[]
+  export type BoardOrderByRelevanceInput = {
+    fields: BoardOrderByRelevanceFieldEnum | BoardOrderByRelevanceFieldEnum[]
     sort: SortOrder
     search: string
   }
 
-  export type ColumnCountOrderByAggregateInput = {
+  export type BoardCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ColumnMaxOrderByAggregateInput = {
+  export type BoardMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ColumnMinOrderByAggregateInput = {
+  export type BoardMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ColumnCreateNestedOneWithoutTasksInput = {
-    create?: XOR<ColumnCreateWithoutTasksInput, ColumnUncheckedCreateWithoutTasksInput>
-    connectOrCreate?: ColumnCreateOrConnectWithoutTasksInput
-    connect?: ColumnWhereUniqueInput
+  export type BoardCreateNestedOneWithoutTasksInput = {
+    create?: XOR<BoardCreateWithoutTasksInput, BoardUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: BoardCreateOrConnectWithoutTasksInput
+    connect?: BoardWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -3373,12 +3373,12 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type ColumnUpdateOneRequiredWithoutTasksNestedInput = {
-    create?: XOR<ColumnCreateWithoutTasksInput, ColumnUncheckedCreateWithoutTasksInput>
-    connectOrCreate?: ColumnCreateOrConnectWithoutTasksInput
-    upsert?: ColumnUpsertWithoutTasksInput
-    connect?: ColumnWhereUniqueInput
-    update?: XOR<XOR<ColumnUpdateToOneWithWhereWithoutTasksInput, ColumnUpdateWithoutTasksInput>, ColumnUncheckedUpdateWithoutTasksInput>
+  export type BoardUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<BoardCreateWithoutTasksInput, BoardUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: BoardCreateOrConnectWithoutTasksInput
+    upsert?: BoardUpsertWithoutTasksInput
+    connect?: BoardWhereUniqueInput
+    update?: XOR<XOR<BoardUpdateToOneWithWhereWithoutTasksInput, BoardUpdateWithoutTasksInput>, BoardUncheckedUpdateWithoutTasksInput>
   }
 
   export type TaskCreateNestedManyWithoutColumnInput = {
@@ -3536,44 +3536,44 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type ColumnCreateWithoutTasksInput = {
+  export type BoardCreateWithoutTasksInput = {
     id?: string
     title: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ColumnUncheckedCreateWithoutTasksInput = {
+  export type BoardUncheckedCreateWithoutTasksInput = {
     id?: string
     title: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ColumnCreateOrConnectWithoutTasksInput = {
-    where: ColumnWhereUniqueInput
-    create: XOR<ColumnCreateWithoutTasksInput, ColumnUncheckedCreateWithoutTasksInput>
+  export type BoardCreateOrConnectWithoutTasksInput = {
+    where: BoardWhereUniqueInput
+    create: XOR<BoardCreateWithoutTasksInput, BoardUncheckedCreateWithoutTasksInput>
   }
 
-  export type ColumnUpsertWithoutTasksInput = {
-    update: XOR<ColumnUpdateWithoutTasksInput, ColumnUncheckedUpdateWithoutTasksInput>
-    create: XOR<ColumnCreateWithoutTasksInput, ColumnUncheckedCreateWithoutTasksInput>
-    where?: ColumnWhereInput
+  export type BoardUpsertWithoutTasksInput = {
+    update: XOR<BoardUpdateWithoutTasksInput, BoardUncheckedUpdateWithoutTasksInput>
+    create: XOR<BoardCreateWithoutTasksInput, BoardUncheckedCreateWithoutTasksInput>
+    where?: BoardWhereInput
   }
 
-  export type ColumnUpdateToOneWithWhereWithoutTasksInput = {
-    where?: ColumnWhereInput
-    data: XOR<ColumnUpdateWithoutTasksInput, ColumnUncheckedUpdateWithoutTasksInput>
+  export type BoardUpdateToOneWithWhereWithoutTasksInput = {
+    where?: BoardWhereInput
+    data: XOR<BoardUpdateWithoutTasksInput, BoardUncheckedUpdateWithoutTasksInput>
   }
 
-  export type ColumnUpdateWithoutTasksInput = {
+  export type BoardUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ColumnUncheckedUpdateWithoutTasksInput = {
+  export type BoardUncheckedUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
