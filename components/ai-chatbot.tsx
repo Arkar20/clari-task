@@ -11,9 +11,9 @@ import { prepareMessages } from "@/lib/ai/index";
 import { AiTextMessage } from "./ai-text-message";
 import { useToast } from "@/hooks/use-toast";
 import { ToolName, tools } from "@/app/actions/openai/tool";
-import { useBoardStore } from "@/store/useBoardStore";
 import { useAiHandler } from "@/hooks/use-ai-handler";
 import { AIResponse } from "@/app/actions/openai";
+import { addMessage } from "@/app/actions/chat-message";
 
 export default function AIChatbot() {
     const [input, setInput] = useState("");
@@ -25,7 +25,7 @@ export default function AIChatbot() {
     const { handleTool } = useAiHandler();
 
     // Get messages and store functions from Zustand store
-    const { addMessage, messages } = useChatStore();
+    const { messages } = useChatStore();
 
     useEffect(() => {
         setMounted(true);
@@ -39,18 +39,18 @@ export default function AIChatbot() {
         setIsLoading(true);
 
         try {
-            // Add user message to store
-            addMessage({
+            await addMessage("1", {
                 role: "user",
                 content: message,
             });
+            // Add user message to store
 
-            const messages = prepareMessages();
+            // const messages = prepareMessages();
 
             // // call open ai api
-            const response = await handleAIChat(messages);
+            // const response = await handleAIChat(messages);
 
-            handleToolCall(response);
+            // handleToolCall(response);
 
             // put the response to the chat history
         } catch (error) {
@@ -66,47 +66,45 @@ export default function AIChatbot() {
         }
     };
 
-    const handleToolCall = async (response: AIResponse) => {
-        if (response.success && response.type === "message") {
-            addMessage({
-                role: "assistant",
-                content: response.message,
-            });
-            return;
-        }
-        if (response.success && response.type === "tool_call") {
-            const { toolCalls, message } = response;
+    // const handleToolCall = async (response: AIResponse) => {
+    //     if (response.success && response.type === "message") {
+    //         addMessage({
+    //             role: "assistant",
+    //             content: response.message,
+    //         });
+    //         return;
+    //     }
+    //     if (response.success && response.type === "tool_call") {
+    //         const { toolCalls, message } = response;
 
-            console.log(toolCalls);
+    //         addMessage(message);
 
-            addMessage(message);
+    //         for (const toolCall of toolCalls) {
+    //             const args = toolCall.function.arguments
+    //                 ? JSON.parse(toolCall.function.arguments)
+    //                 : undefined;
 
-            for (const toolCall of toolCalls) {
-                const args = toolCall.function.arguments
-                    ? JSON.parse(toolCall.function.arguments)
-                    : undefined;
+    //             const results = await handleTool(
+    //                 toolCall.function.name as ToolName,
+    //                 args
+    //             );
 
-                const results = await handleTool(
-                    toolCall.function.name as ToolName,
-                    args
-                );
+    //             if (results) {
+    //                 addMessage({
+    //                     role: "tool",
+    //                     content: JSON.stringify(results),
+    //                     tool_call_id: toolCall.id,
+    //                 });
 
-                if (results) {
-                    addMessage({
-                        role: "tool",
-                        content: JSON.stringify(results),
-                        tool_call_id: toolCall.id,
-                    });
+    //                 const messages = prepareMessages();
 
-                    const messages = prepareMessages();
+    //                 const response = await handleAIChat(messages);
 
-                    const response = await handleAIChat(messages);
-
-                    handleToolCall(response);
-                }
-            }
-        }
-    };
+    //                 handleToolCall(response);
+    //             }
+    //         }
+    //     }
+    // };
 
     if (!mounted) return null;
 

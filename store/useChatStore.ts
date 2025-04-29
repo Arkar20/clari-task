@@ -17,7 +17,7 @@ export const useChatStore = create<ChatState>()(
                 })),
         }),
         {
-            name: "chat-storage", // unique name
+            name: "chat-storage",
             storage: createJSONStorage(() => localStorage),
         }
     )
