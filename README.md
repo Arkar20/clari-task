@@ -18,7 +18,7 @@ Claritask is an AI-powered task management platform that helps teams prioritize,
 
 - ⚡ **Next.js** – React framework for production-grade apps
 - 🧠 **Zustand** – Lightweight, fast state management
-- 🛢️ **Mongoose** – Elegant MongoDB object modeling for Node.js
+- 🛢️ Prisma – Modern and type-safe ORM for MySQL and other SQL databases in Node.js
 - 🧠 **Frontier LLM** – AI task planning and suggestions
 - 🔗 **TOOL API** – Workflow automations
 
@@ -29,13 +29,17 @@ Claritask is an AI-powered task management platform that helps teams prioritize,
 
 Before you begin, make sure you have the following installed:
 
-- 🟢 **Node.js** > 18  
+- 🟢 **Node.js** > 18
   [Download Node.js](https://nodejs.org/en/download/)
-  
-- 📦 **pnpm** package manager  
+
+- 📦 **pnpm** package manager
   Install pnpm globally if you don't have it:
   ```bash
   npm install -g pnpm
+
+- 🛢️ **mysql**
+  Install mysql locally or connect remote server
+
 
 ## 🛠️ Run Locally
 
@@ -51,7 +55,7 @@ Follow these steps to get Claritask running on your machine:
 
 3. **Set .env variables**
     ```bash
-    MONGODB_URI=your-mongodb-connection-string
+    DATABASE_URL=your-mysql-connection-string
     OPENAI_API_KEY=your-openai-api-key
     NEXT_PUBLIC_API_URL=http://localhost:3000
 
