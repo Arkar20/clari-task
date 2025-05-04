@@ -1063,8 +1063,18 @@ export namespace Prisma {
 
   export type AggregateTask = {
     _count: TaskCountAggregateOutputType | null
+    _avg: TaskAvgAggregateOutputType | null
+    _sum: TaskSumAggregateOutputType | null
     _min: TaskMinAggregateOutputType | null
     _max: TaskMaxAggregateOutputType | null
+  }
+
+  export type TaskAvgAggregateOutputType = {
+    sort: number | null
+  }
+
+  export type TaskSumAggregateOutputType = {
+    sort: number | null
   }
 
   export type TaskMinAggregateOutputType = {
@@ -1073,6 +1083,7 @@ export namespace Prisma {
     description: string | null
     columnId: string | null
     createdAt: Date | null
+    sort: number | null
     updatedAt: Date | null
   }
 
@@ -1082,6 +1093,7 @@ export namespace Prisma {
     description: string | null
     columnId: string | null
     createdAt: Date | null
+    sort: number | null
     updatedAt: Date | null
   }
 
@@ -1091,10 +1103,19 @@ export namespace Prisma {
     description: number
     columnId: number
     createdAt: number
+    sort: number
     updatedAt: number
     _all: number
   }
 
+
+  export type TaskAvgAggregateInputType = {
+    sort?: true
+  }
+
+  export type TaskSumAggregateInputType = {
+    sort?: true
+  }
 
   export type TaskMinAggregateInputType = {
     id?: true
@@ -1102,6 +1123,7 @@ export namespace Prisma {
     description?: true
     columnId?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
   }
 
@@ -1111,6 +1133,7 @@ export namespace Prisma {
     description?: true
     columnId?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
   }
 
@@ -1120,6 +1143,7 @@ export namespace Prisma {
     description?: true
     columnId?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
     _all?: true
   }
@@ -1162,6 +1186,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TaskMinAggregateInputType
@@ -1192,6 +1228,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TaskCountAggregateInputType | true
+    _avg?: TaskAvgAggregateInputType
+    _sum?: TaskSumAggregateInputType
     _min?: TaskMinAggregateInputType
     _max?: TaskMaxAggregateInputType
   }
@@ -1202,8 +1240,11 @@ export namespace Prisma {
     description: string | null
     columnId: string
     createdAt: Date
+    sort: number | null
     updatedAt: Date
     _count: TaskCountAggregateOutputType | null
+    _avg: TaskAvgAggregateOutputType | null
+    _sum: TaskSumAggregateOutputType | null
     _min: TaskMinAggregateOutputType | null
     _max: TaskMaxAggregateOutputType | null
   }
@@ -1228,6 +1269,7 @@ export namespace Prisma {
     description?: boolean
     columnId?: boolean
     createdAt?: boolean
+    sort?: boolean
     updatedAt?: boolean
     column?: boolean | BoardDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
@@ -1240,10 +1282,11 @@ export namespace Prisma {
     description?: boolean
     columnId?: boolean
     createdAt?: boolean
+    sort?: boolean
     updatedAt?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "columnId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "columnId" | "createdAt" | "sort" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     column?: boolean | BoardDefaultArgs<ExtArgs>
   }
@@ -1259,6 +1302,7 @@ export namespace Prisma {
       description: string | null
       columnId: string
       createdAt: Date
+      sort: number | null
       updatedAt: Date
     }, ExtArgs["result"]["task"]>
     composites: {}
@@ -1635,6 +1679,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Task", 'String'>
     readonly columnId: FieldRef<"Task", 'String'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
+    readonly sort: FieldRef<"Task", 'Int'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
   }
     
@@ -2003,14 +2048,25 @@ export namespace Prisma {
 
   export type AggregateBoard = {
     _count: BoardCountAggregateOutputType | null
+    _avg: BoardAvgAggregateOutputType | null
+    _sum: BoardSumAggregateOutputType | null
     _min: BoardMinAggregateOutputType | null
     _max: BoardMaxAggregateOutputType | null
+  }
+
+  export type BoardAvgAggregateOutputType = {
+    sort: number | null
+  }
+
+  export type BoardSumAggregateOutputType = {
+    sort: number | null
   }
 
   export type BoardMinAggregateOutputType = {
     id: string | null
     title: string | null
     createdAt: Date | null
+    sort: number | null
     updatedAt: Date | null
   }
 
@@ -2018,6 +2074,7 @@ export namespace Prisma {
     id: string | null
     title: string | null
     createdAt: Date | null
+    sort: number | null
     updatedAt: Date | null
   }
 
@@ -2025,15 +2082,25 @@ export namespace Prisma {
     id: number
     title: number
     createdAt: number
+    sort: number
     updatedAt: number
     _all: number
   }
 
 
+  export type BoardAvgAggregateInputType = {
+    sort?: true
+  }
+
+  export type BoardSumAggregateInputType = {
+    sort?: true
+  }
+
   export type BoardMinAggregateInputType = {
     id?: true
     title?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
   }
 
@@ -2041,6 +2108,7 @@ export namespace Prisma {
     id?: true
     title?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
   }
 
@@ -2048,6 +2116,7 @@ export namespace Prisma {
     id?: true
     title?: true
     createdAt?: true
+    sort?: true
     updatedAt?: true
     _all?: true
   }
@@ -2090,6 +2159,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: BoardAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BoardSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: BoardMinAggregateInputType
@@ -2120,6 +2201,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: BoardCountAggregateInputType | true
+    _avg?: BoardAvgAggregateInputType
+    _sum?: BoardSumAggregateInputType
     _min?: BoardMinAggregateInputType
     _max?: BoardMaxAggregateInputType
   }
@@ -2128,8 +2211,11 @@ export namespace Prisma {
     id: string
     title: string
     createdAt: Date
+    sort: number | null
     updatedAt: Date
     _count: BoardCountAggregateOutputType | null
+    _avg: BoardAvgAggregateOutputType | null
+    _sum: BoardSumAggregateOutputType | null
     _min: BoardMinAggregateOutputType | null
     _max: BoardMaxAggregateOutputType | null
   }
@@ -2152,6 +2238,7 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     createdAt?: boolean
+    sort?: boolean
     updatedAt?: boolean
     tasks?: boolean | Board$tasksArgs<ExtArgs>
     _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
@@ -2163,10 +2250,11 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     createdAt?: boolean
+    sort?: boolean
     updatedAt?: boolean
   }
 
-  export type BoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
+  export type BoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "createdAt" | "sort" | "updatedAt", ExtArgs["result"]["board"]>
   export type BoardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasks?: boolean | Board$tasksArgs<ExtArgs>
     _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
@@ -2181,6 +2269,7 @@ export namespace Prisma {
       id: string
       title: string
       createdAt: Date
+      sort: number | null
       updatedAt: Date
     }, ExtArgs["result"]["board"]>
     composites: {}
@@ -2555,6 +2644,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Board", 'String'>
     readonly title: FieldRef<"Board", 'String'>
     readonly createdAt: FieldRef<"Board", 'DateTime'>
+    readonly sort: FieldRef<"Board", 'Int'>
     readonly updatedAt: FieldRef<"Board", 'DateTime'>
   }
     
@@ -3817,6 +3907,7 @@ export namespace Prisma {
     description: 'description',
     columnId: 'columnId',
     createdAt: 'createdAt',
+    sort: 'sort',
     updatedAt: 'updatedAt'
   };
 
@@ -3827,6 +3918,7 @@ export namespace Prisma {
     id: 'id',
     title: 'title',
     createdAt: 'createdAt',
+    sort: 'sort',
     updatedAt: 'updatedAt'
   };
 
@@ -3927,6 +4019,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3941,9 +4040,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'Float'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
   /**
    * Deep Input Types
@@ -3959,6 +4058,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     columnId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
+    sort?: IntNullableFilter<"Task"> | number | null
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     column?: XOR<BoardScalarRelationFilter, BoardWhereInput>
   }
@@ -3969,6 +4069,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     columnId?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     column?: BoardOrderByWithRelationInput
     _relevance?: TaskOrderByRelevanceInput
@@ -3983,6 +4084,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     columnId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
+    sort?: IntNullableFilter<"Task"> | number | null
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     column?: XOR<BoardScalarRelationFilter, BoardWhereInput>
   }, "id">
@@ -3993,10 +4095,13 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     columnId?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: TaskCountOrderByAggregateInput
+    _avg?: TaskAvgOrderByAggregateInput
     _max?: TaskMaxOrderByAggregateInput
     _min?: TaskMinOrderByAggregateInput
+    _sum?: TaskSumOrderByAggregateInput
   }
 
   export type TaskScalarWhereWithAggregatesInput = {
@@ -4008,6 +4113,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Task"> | string | null
     columnId?: StringWithAggregatesFilter<"Task"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+    sort?: IntNullableWithAggregatesFilter<"Task"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
   }
 
@@ -4018,6 +4124,7 @@ export namespace Prisma {
     id?: StringFilter<"Board"> | string
     title?: StringFilter<"Board"> | string
     createdAt?: DateTimeFilter<"Board"> | Date | string
+    sort?: IntNullableFilter<"Board"> | number | null
     updatedAt?: DateTimeFilter<"Board"> | Date | string
     tasks?: TaskListRelationFilter
   }
@@ -4026,6 +4133,7 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     tasks?: TaskOrderByRelationAggregateInput
     _relevance?: BoardOrderByRelevanceInput
@@ -4038,6 +4146,7 @@ export namespace Prisma {
     NOT?: BoardWhereInput | BoardWhereInput[]
     title?: StringFilter<"Board"> | string
     createdAt?: DateTimeFilter<"Board"> | Date | string
+    sort?: IntNullableFilter<"Board"> | number | null
     updatedAt?: DateTimeFilter<"Board"> | Date | string
     tasks?: TaskListRelationFilter
   }, "id">
@@ -4046,10 +4155,13 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: BoardCountOrderByAggregateInput
+    _avg?: BoardAvgOrderByAggregateInput
     _max?: BoardMaxOrderByAggregateInput
     _min?: BoardMinOrderByAggregateInput
+    _sum?: BoardSumOrderByAggregateInput
   }
 
   export type BoardScalarWhereWithAggregatesInput = {
@@ -4059,6 +4171,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Board"> | string
     title?: StringWithAggregatesFilter<"Board"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Board"> | Date | string
+    sort?: IntNullableWithAggregatesFilter<"Board"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"Board"> | Date | string
   }
 
@@ -4110,6 +4223,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
     column: BoardCreateNestedOneWithoutTasksInput
   }
@@ -4120,6 +4234,7 @@ export namespace Prisma {
     description?: string | null
     columnId: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4128,6 +4243,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     column?: BoardUpdateOneRequiredWithoutTasksNestedInput
   }
@@ -4138,6 +4254,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     columnId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4147,6 +4264,7 @@ export namespace Prisma {
     description?: string | null
     columnId: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4155,6 +4273,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4164,6 +4283,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     columnId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4171,6 +4291,7 @@ export namespace Prisma {
     id?: string
     title: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
     tasks?: TaskCreateNestedManyWithoutColumnInput
   }
@@ -4179,6 +4300,7 @@ export namespace Prisma {
     id?: string
     title: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
     tasks?: TaskUncheckedCreateNestedManyWithoutColumnInput
   }
@@ -4187,6 +4309,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tasks?: TaskUpdateManyWithoutColumnNestedInput
   }
@@ -4195,6 +4318,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tasks?: TaskUncheckedUpdateManyWithoutColumnNestedInput
   }
@@ -4203,6 +4327,7 @@ export namespace Prisma {
     id?: string
     title: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4210,6 +4335,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4217,6 +4343,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4303,6 +4430,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type BoardScalarRelationFilter = {
     is?: BoardWhereInput
     isNot?: BoardWhereInput
@@ -4325,7 +4463,12 @@ export namespace Prisma {
     description?: SortOrder
     columnId?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type TaskAvgOrderByAggregateInput = {
+    sort?: SortOrder
   }
 
   export type TaskMaxOrderByAggregateInput = {
@@ -4334,6 +4477,7 @@ export namespace Prisma {
     description?: SortOrder
     columnId?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -4343,7 +4487,12 @@ export namespace Prisma {
     description?: SortOrder
     columnId?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type TaskSumOrderByAggregateInput = {
+    sort?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -4396,6 +4545,22 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type TaskListRelationFilter = {
     every?: TaskWhereInput
     some?: TaskWhereInput
@@ -4416,13 +4581,19 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BoardAvgOrderByAggregateInput = {
+    sort?: SortOrder
   }
 
   export type BoardMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -4430,7 +4601,12 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+    sort?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BoardSumOrderByAggregateInput = {
+    sort?: SortOrder
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -4520,6 +4696,14 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type BoardUpdateOneRequiredWithoutTasksNestedInput = {
@@ -4613,6 +4797,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -4660,17 +4855,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -4683,6 +4867,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -4712,6 +4923,7 @@ export namespace Prisma {
     id?: string
     title: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4719,6 +4931,7 @@ export namespace Prisma {
     id?: string
     title: string
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4742,6 +4955,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4749,6 +4963,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4757,6 +4972,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4765,6 +4981,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4803,6 +5020,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Task"> | string | null
     columnId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
+    sort?: IntNullableFilter<"Task"> | number | null
     updatedAt?: DateTimeFilter<"Task"> | Date | string
   }
 
@@ -4811,6 +5029,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     createdAt?: Date | string
+    sort?: number | null
     updatedAt?: Date | string
   }
 
@@ -4819,6 +5038,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4827,6 +5047,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4835,6 +5056,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sort?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

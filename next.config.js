@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const withImages = require('next-images')
+
 const nextConfig = {
   output: 'standalone',
   eslint: {
@@ -7,4 +9,10 @@ const nextConfig = {
   images: { unoptimized: true },
 };
 
-module.exports = nextConfig;
+module.exports = withImages({
+    ...nextConfig,
+    webpack(config, options) {
+        return config
+    },
+
+});

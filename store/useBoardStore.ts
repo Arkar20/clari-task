@@ -1,18 +1,10 @@
+import { Prisma } from "@/lib/generated/prisma";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export interface Task {
-    id: string;
-    title: string;
-    description?: string;
-}
+export type Column = Prisma.BoardGetPayload<{ include: { tasks: true } }>;
 
-export interface Column {
-    id: string;
-    title: string;
-    tasks: Task[];
-}
-
+export type Task = Prisma.TaskGetPayload<{}>;
 interface BoardState {
     columns: Column[];
     addColumn: (title: string) => void;
@@ -20,73 +12,25 @@ interface BoardState {
     addTask: (columnId: string, task: Task) => void;
 }
 
-const initialColumns: Column[] = [
-    {
-        id: "todo",
-        title: "To Do",
-        tasks: [
-            {
-                id: "task-1",
-                title: "Research competitors",
-                description: "Analyze key competitors in the market",
-            },
-            {
-                id: "task-2",
-                title: "Design mockups",
-                description: "Create initial design mockups for the dashboard",
-            },
-        ],
-    },
-    {
-        id: "in-progress",
-        title: "In Progress",
-        tasks: [
-            {
-                id: "task-3",
-                title: "Implement authentication",
-                description: "Set up user authentication system",
-            },
-            {
-                id: "task-4",
-                title: "Create API endpoints",
-                description: "Design and implement RESTful API endpoints",
-            },
-        ],
-    },
-    {
-        id: "done",
-        title: "Done",
-        tasks: [
-            {
-                id: "task-5",
-                title: "Project setup",
-                description:
-                    "Initialize project and set up development environment",
-            },
-            {
-                id: "task-6",
-                title: "Initial planning",
-                description: "Define project scope and create roadmap",
-            },
-        ],
-    },
-];
-
 export const useBoardStore = create<BoardState>()(
     persist(
         (set) => ({
-            columns: initialColumns,
-            addColumn: (title: string) =>
+            columns: [],
+            addColumn: async (title: string) => {
                 set((state) => ({
                     columns: [
                         ...state.columns,
                         {
-                            id: `column-${Date.now()}`,
+                            id: new Date().toISOString(),
                             title,
+                            sort: 1,
+                            updatedAt: new Date(),
+                            createdAt: new Date(),
                             tasks: [],
                         },
                     ],
-                })),
+                }));
+            },
             updateColumns: (columns: Column[]) => set({ columns }),
             addTask: (columnId: string, task: Task) =>
                 set((state) => ({

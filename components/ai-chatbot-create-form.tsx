@@ -7,6 +7,7 @@ import { useAiHandler } from "@/hooks/use-ai-handler";
 import { ToolName } from "@/app/actions/openai/tool";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import AudioRecorder from "./audio-recorder";
 
 export const AIChatbotCreateForm = ({
     addToLocalMessages,
@@ -109,6 +110,7 @@ export const AIChatbotCreateForm = ({
                 disabled={isPending}
                 className="dark:bg-gray-800 dark:border-gray-700"
             />
+            <AudioRecorder />
             <Button
                 onClick={() => startTransition(() => handleSendMessage())}
                 disabled={isPending}

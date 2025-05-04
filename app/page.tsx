@@ -4,13 +4,24 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-    const res = await prisma.message.findMany({
+    const messages = await prisma.message.findMany({
         select: {
             data: true,
         },
     });
 
-    console.log(res);
+    const boards = await prisma.board.findMany({
+        orderBy: {
+            sort: "asc",
+        },
+        include: {
+            tasks: {
+                orderBy: {
+                    sort: "asc",
+                },
+            },
+        },
+    });
 
     return (
         <div className="min-h-screen bg-background p-8">
@@ -21,8 +32,9 @@ export default async function Home() {
                     </h1>
                     <ThemeToggle />
                 </div>
-                <Board />
-                <AIChatbot messages={res.map((res) => res.data)} />
+                <Board boards={boards} />
+
+                <AIChatbot messages={messages.map((res) => res.data)} />
             </div>
         </div>
     );

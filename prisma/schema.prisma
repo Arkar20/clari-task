@@ -16,6 +16,7 @@ model Task {
   columnId    String
   column      Board    @relation(fields: [columnId], references: [id])
   createdAt   DateTime @default(now())
+  sort        Int?
   updatedAt   DateTime @updatedAt
 }
 
@@ -24,10 +25,9 @@ model Board {
   title     String
   tasks     Task[]
   createdAt DateTime @default(now())
+  sort        Int?
   updatedAt DateTime @updatedAt
 }
-
-
 
 model Message {
   id        String   @id @default(cuid())

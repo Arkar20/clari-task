@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, act } from "react";
 import {
     DndContext,
     DragEndEvent,
@@ -16,43 +16,29 @@ import {
     arrayMove,
     horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Column from "./column";
-import { PlusCircle } from "lucide-react";
-import { Button } from "./ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-    DialogClose,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
 import { AnimatePresence, motion } from "framer-motion";
-import { useBoardStore } from "@/store/useBoardStore";
+import {
+    Column as ColumnType,
+    Task,
+    useBoardStore,
+} from "@/store/useBoardStore";
+import CreateBoard from "./create-board";
+import Column from "./column";
+import { swapBoardSort } from "@/app/actions/board";
 
-interface Task {
-    id: string;
-    title: string;
-    description?: string;
-}
+export default function Board({ boards }: { boards: ColumnType[] }) {
+    const { columns, updateColumns } = useBoardStore();
 
-interface Column {
-    id: string;
-    title: string;
-    tasks: Task[];
-}
-
-export default function Board() {
-    const { columns, addColumn, updateColumns } = useBoardStore();
+    useEffect(() => {
+        updateColumns(boards);
+    }, [boards]);
 
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const [activeColumn, setActiveColumn] = useState<{
         id: string;
         title: string;
     } | null>(null);
-    const [newColumnTitle, setNewColumnTitle] = useState("");
+
     const [overId, setOverId] = useState<string | null>(null);
 
     const sensors = useSensors(
@@ -87,7 +73,7 @@ export default function Board() {
     }, []);
 
     const handleDragEnd = useCallback(
-        (event: DragEndEvent) => {
+        async (event: DragEndEvent) => {
             const { active, over } = event;
             if (!over) {
                 setOverId(null);
@@ -224,6 +210,11 @@ export default function Board() {
             setOverId(null);
             setActiveTask(null);
             setActiveColumn(null);
+
+            await swapBoardSort(
+                active.data.current?.column.id,
+                over.data.current?.column.id
+            );
         },
         [columns, updateColumns]
     );
@@ -237,48 +228,7 @@ export default function Board() {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Board</h1>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button>
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Column
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Add New Column</DialogTitle>
-                            </DialogHeader>
-                            <div className="py-4">
-                                <Input
-                                    placeholder="Column title"
-                                    value={newColumnTitle}
-                                    onChange={(e) =>
-                                        setNewColumnTitle(e.target.value)
-                                    }
-                                />
-                            </div>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => {
-                                            if (newColumnTitle.trim()) {
-                                                addColumn(
-                                                    newColumnTitle.trim()
-                                                );
-                                                setNewColumnTitle("");
-                                            }
-                                        }}
-                                    >
-                                        Add
-                                    </Button>
-                                </DialogClose>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                </div>
+                <CreateBoard />
 
                 <div className="flex h-full gap-4 overflow-x-auto">
                     <SortableContext
