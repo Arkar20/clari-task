@@ -143,11 +143,13 @@ export default function Board({ boards }: { boards: ColumnType[] }) {
                         const overTaskIndex = overColumn.tasks.findIndex(
                             (task) => task.id === overId
                         );
+
                         const newTasks = arrayMove(
                             activeColumn.tasks,
                             activeTaskIndex,
                             overTaskIndex
                         );
+
                         const newColumns = columns.map((col) =>
                             col.id === activeColumn.id
                                 ? { ...col, tasks: newTasks }

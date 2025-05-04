@@ -39,50 +39,87 @@ export async function createTask(columnId: string, data: CreateTaskInput) {
         return { success: false, error: "Failed to create task" };
     }
 }
-
 export async function swapTaskSort(
-    selected: {
-        id: string;
-        colId: string;
-    },
-    target: {
-        id: string;
-        colId: string;
-    }
+    selected: { id: string; colId: string },
+    target: { id: string; colId: string }
 ) {
     try {
         if (!selected.colId || !target.colId) return;
 
-        // Get current sort values for both boards
         const [selectedTask, targetTask] = await prisma.$transaction([
-            prisma.task.findFirstOrThrow({
-                where: { id: selected.id },
-            }),
+            prisma.task.findFirstOrThrow({ where: { id: selected.id } }),
             prisma.task.findFirstOrThrow({ where: { id: target.id } }),
         ]);
 
-        // Swap sort values
-        await prisma.$transaction([
-            prisma.task.update({
-                where: { id: selectedTask.id },
-                data: { sort: targetTask.sort, columnId: targetTask.columnId },
-            }),
+        const isSameColumn = selected.colId === target.colId;
 
-            prisma.task.update({
-                where: { id: targetTask.id },
-                data: {
-                    sort: selectedTask.sort,
-                    columnId: selectedTask.columnId,
-                },
-            }),
-        ]);
+        if (isSameColumn) {
+            const tasks = await prisma.task.findMany({
+                where: { columnId: selected.colId },
+                orderBy: { sort: "asc" },
+            });
 
-        // revalidatePath("/");
+            const updatedTasks = tasks
+                .filter((task) => task.id !== selectedTask.id)
+                .reduce((acc, task, index) => {
+                    if (
+                        task.id === targetTask.id &&
+                        selectedTask.sort < targetTask.sort
+                    ) {
+                        acc.push({ ...selectedTask, sort: index });
+                        acc.push({ ...task, sort: index + 1 });
+                    } else if (task.id === targetTask.id) {
+                        acc.push({ ...selectedTask, sort: index });
+                        acc.push({ ...task, sort: index + 1 });
+                    } else {
+                        acc.push({ ...task, sort: acc.length });
+                    }
+                    return acc;
+                }, [] as any[]);
+
+            await prisma.$transaction(
+                updatedTasks.map((task) =>
+                    prisma.task.update({
+                        where: { id: task.id },
+                        data: { sort: task.sort },
+                    })
+                )
+            );
+        } else {
+            await prisma.$transaction([
+                // Step 1: Make space in target column
+                prisma.task.updateMany({
+                    where: {
+                        columnId: target.colId,
+                        sort: { gte: targetTask.sort as number },
+                    },
+                    data: { sort: { increment: 1 } },
+                }),
+
+                // Step 2: Move task to target column
+                prisma.task.update({
+                    where: { id: selectedTask.id },
+                    data: {
+                        columnId: target.colId,
+                        sort: targetTask.sort,
+                    },
+                }),
+
+                // Step 3: Close gap in original column
+                prisma.task.updateMany({
+                    where: {
+                        columnId: selected.colId,
+                        sort: { gt: selectedTask.sort as number },
+                    },
+                    data: { sort: { decrement: 1 } },
+                }),
+            ]);
+        }
 
         return { success: true };
     } catch (error) {
-        console.error("Error swapping board sort:", error);
-        return { success: false, error: "Failed to swap board sort order" };
+        console.error("Error swapping task sort:", error);
+        return { success: false, error: "Failed to reorder tasks" };
     }
 }
 
@@ -99,9 +136,9 @@ export async function swapTaskToEmptyColumn(
             where: { id: selected.id },
         });
 
-        const maxSort = await prisma.board.aggregate({
+        const maxSort = await prisma.task.aggregate({
             where: {
-                id: targetColId,
+                columnId: targetColId,
             },
             _max: {
                 sort: true,
@@ -118,8 +155,6 @@ export async function swapTaskToEmptyColumn(
                 columnId: targetColId,
             },
         });
-
-        console.log(task);
 
         // revalidatePath("/");
 

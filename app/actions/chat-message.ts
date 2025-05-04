@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { handleAIChat } from "./ai-chat";
 import { AIResponse } from "./openai";
 import { revalidatePath } from "next/cache";
+import { prepareMessages } from "@/lib/ai";
 
 export async function addMessage(payload: any): Promise<AIResponse> {
     try {
         const count = await prisma.message.count();
 
-        if (count > 40) {
+        if (count > 10) {
             await prisma.message.deleteMany();
         }
 
@@ -32,14 +33,12 @@ export async function addMessage(payload: any): Promise<AIResponse> {
 
         // fetch all the messages
         const aiRes = await handleAIChat(
-            messages.map((message) => message.data)
+            prepareMessages(messages.map((message) => message.data))
         );
-
-        revalidatePath("/");
 
         return aiRes;
     } catch (error) {
         console.error("Failed to add message:", error);
-        return { success: false, error: "Failed to add message" };
+        return { success: false, message: "Failed to add message" };
     }
 }

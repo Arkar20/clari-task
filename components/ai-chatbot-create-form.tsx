@@ -8,6 +8,7 @@ import { ToolName } from "@/app/actions/openai/tool";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import AudioRecorder from "./audio-recorder";
+import { revalidatePath } from "next/cache";
 
 export const AIChatbotCreateForm = ({
     addToLocalMessages,
@@ -43,7 +44,7 @@ export const AIChatbotCreateForm = ({
                 throw new Error("Error Conmunicating with AI Bot ");
             }
 
-            handleToolCall(res);
+            const result = await handleToolCall(res);
         } catch (error) {
             console.error("Error sending message:", error);
 
@@ -95,6 +96,8 @@ export const AIChatbotCreateForm = ({
                 }
             }
         }
+
+        return true;
     };
     return (
         <div className="flex gap-2 p-4 border-t dark:border-gray-800">

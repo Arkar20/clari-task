@@ -2,9 +2,7 @@ import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useChatStore } from "@/store/useChatStore";
 import { Column } from "@/store/useBoardStore";
 
-export const prepareMessages = (): ChatCompletionMessageParam[] => {
-    const history = useChatStore.getState().messages;
-
+export const prepareMessages = (history: any): ChatCompletionMessageParam[] => {
     // Optionally add a system prompt at the beginning
     return [
         {

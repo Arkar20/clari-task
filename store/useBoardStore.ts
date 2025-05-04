@@ -5,6 +5,11 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export type Column = Prisma.BoardGetPayload<{ include: { tasks: true } }>;
 
 export type Task = Prisma.TaskGetPayload<{}>;
+
+type CreateTask = {
+    title: string;
+    columnId: string;
+};
 interface BoardState {
     columns: Column[];
     addColumn: (title: string) => void;

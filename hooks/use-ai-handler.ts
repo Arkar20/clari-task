@@ -13,29 +13,24 @@ export type SearchParamsTool = {
     columnName: string;
     taskName: string;
 };
-export type TaskWithColumn = Task & {
-    column: string;
-};
 
 export const useAiHandler = () => {
     const { columns, addTask, updateColumns } = useBoardStore();
 
-    const handleSearchTasks = async (
-        board: Column[]
-    ): Promise<TaskWithColumn[]> => {
+    const handleSearchTasks = async (board: Column[]) => {
         const columns = board;
 
-        let results = columns.flatMap((column) =>
-            column.tasks.map((task) => ({
-                ...task,
-                column: column.title,
-                task: task.title,
-                description: task.description,
-                board: column.title,
-            }))
-        );
+        // let results = columns.flatMap((column) =>
+        //     column.tasks.map((task) => ({
+        //         ...task,
+        //         column: column.title,
+        //         task: task.title,
+        //         description: task.description,
+        //         board: column.title,
+        //     }))
+        // );
 
-        return results;
+        return columns;
     };
 
     const handleAddTask = async (args: ToolParamsMap["create_task"]) => {
@@ -57,7 +52,7 @@ export const useAiHandler = () => {
             description: args.description,
         };
 
-        addTask(board.id, task);
+        // addTask(board.id, task);
 
         return [task];
     };

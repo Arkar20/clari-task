@@ -20,13 +20,15 @@ export type AIResponse =
       }
     | {
           success: false;
-          error: any;
+          error?: any;
+          message: string;
       };
 
 export const handleAiCall = async (
     messages: ChatCompletionMessageParam[]
 ): Promise<AIResponse> => {
     try {
+        console.log(messages);
         const completion = await openai.chat.completions.create({
             model: "gpt-4.1-mini",
             messages,
@@ -56,7 +58,6 @@ export const handleAiCall = async (
         }
 
         return {
-            type: "message",
             success: false,
             message: "Failed to get a response from the assistant.",
         };
@@ -64,7 +65,6 @@ export const handleAiCall = async (
         console.error("Error in handleAiCall:", error);
 
         return {
-            type: "message",
             success: false,
             message: `Error in handleAiCall: ${JSON.stringify(error)}`,
         };
