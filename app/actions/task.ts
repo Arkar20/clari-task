@@ -85,3 +85,47 @@ export async function swapTaskSort(
         return { success: false, error: "Failed to swap board sort order" };
     }
 }
+
+export async function swapTaskToEmptyColumn(
+    selected: {
+        id: string;
+        colId: string;
+    },
+    targetColId: string
+) {
+    try {
+        // Get current sort values for both boards
+        const targetTask = await prisma.task.findFirstOrThrow({
+            where: { id: selected.id },
+        });
+
+        const maxSort = await prisma.board.aggregate({
+            where: {
+                id: targetColId,
+            },
+            _max: {
+                sort: true,
+            },
+        });
+
+        const nextSort = (maxSort._max.sort ?? 0) + 1;
+
+        // Swap sort values
+        const task = await prisma.task.update({
+            where: { id: targetTask.id },
+            data: {
+                sort: nextSort,
+                columnId: targetColId,
+            },
+        });
+
+        console.log(task);
+
+        // revalidatePath("/");
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error swapping board sort:", error);
+        return { success: false, error: "Failed to swap board sort order" };
+    }
+}
