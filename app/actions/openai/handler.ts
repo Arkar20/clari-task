@@ -1,27 +1,45 @@
-import { Column, Task } from "@/types";
+import {
+    CreateParamsTool,
+    FindParamTool,
+    RemoveParamTool,
+    ToolName,
+    ToolParamsMap,
+    UpdateParamsTool,
+} from "@/app/actions/openai/tool";
+import { prisma } from "@/lib/prisma";
 
-export type SearchParamsTool = {
-    columnName: string;
-    taskName: string;
+const handleSearchTasks = async () => {
+    const boards = await prisma.board.findMany({
+        include: {
+            tasks: true,
+        },
+    });
+
+    return boards;
 };
-export type TaskWithColumn = Task & {
-    column: string;
-};
+export const handleTool = (
+    toolName: ToolName,
+    args: ToolParamsMap[ToolName]
+) => {
+    switch (toolName) {
+        case "search_tasks":
+            return handleSearchTasks();
 
-export const handleSearchTasks = async (
-    board: Column[]
-): Promise<TaskWithColumn[]> => {
-    const columns = board;
+        // case "create_task":
+        //     return handleAddTask(args as CreateParamsTool);
 
-    let results = columns.flatMap((column) =>
-        column.tasks.map((task) => ({
-            ...task,
-            column: column.title,
-            task: task.title,
-            description: task.description,
-            board: column.title,
-        }))
-    );
+        // case "find_task":
+        //     return handleFindTask(args as FindParamTool);
 
-    return results;
+        // case "remove_task":
+        //     return handleRemoveTask(args as RemoveParamTool);
+
+        // case "update_task":
+        //     return handleUpdateTask(args as UpdateParamsTool);
+
+        default:
+            throw new Error("No Tool Handler Found!");
+            return [];
+            break;
+    }
 };
