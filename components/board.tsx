@@ -25,6 +25,7 @@ import {
 import CreateBoard from "./create-board";
 import Column from "./column";
 import { swapBoardSort } from "@/app/actions/board";
+import { swapTaskSort } from "@/app/actions/task";
 
 export default function Board({ boards }: { boards: ColumnType[] }) {
     const { columns, updateColumns } = useBoardStore();
@@ -101,6 +102,7 @@ export default function Board({ boards }: { boards: ColumnType[] }) {
                 const activeColumnIndex = columns.findIndex(
                     (col) => col.id === activeId
                 );
+
                 const overColumnIndex = columns.findIndex(
                     (col) => col.id === overId
                 );
@@ -113,6 +115,11 @@ export default function Board({ boards }: { boards: ColumnType[] }) {
                     );
                     updateColumns(newColumns);
                 }
+
+                await swapBoardSort(
+                    active.data.current?.column.id,
+                    over.data.current?.column.id
+                );
             } else if (isActiveATask) {
                 const activeColumn = columns.find((col) =>
                     col.tasks.some((task) => task.id === activeId)
@@ -205,16 +212,22 @@ export default function Board({ boards }: { boards: ColumnType[] }) {
                         updateColumns(newColumns);
                     }
                 }
+
+                await swapTaskSort(
+                    {
+                        id: active.data.current?.task?.id,
+                        colId: active.data.current?.task?.columnId,
+                    },
+                    {
+                        id: over.data.current?.task.id,
+                        colId: over.data.current?.task.columnId,
+                    }
+                );
             }
 
             setOverId(null);
             setActiveTask(null);
             setActiveColumn(null);
-
-            await swapBoardSort(
-                active.data.current?.column.id,
-                over.data.current?.column.id
-            );
         },
         [columns, updateColumns]
     );

@@ -22,6 +22,7 @@ import {
 import { Input } from "./ui/input";
 import { useState, memo } from "react";
 import { generateUUID } from "@/lib/utils";
+import { createTask } from "@/app/actions/task";
 
 interface ColumnProps {
     columnId: string;
@@ -62,18 +63,19 @@ const Column = memo(function Column({
         opacity: isDragging ? 0.5 : 1,
     };
 
-    const handleAddTask = () => {
+    const handleAddTask = async () => {
         if (!column || !newTaskTitle.trim()) return;
 
-        const newTask: Task = {
-            id: generateUUID(),
+        const newTask = {
             title: newTaskTitle.trim(),
-            description: newTaskDescription.trim() || undefined,
+            columnId: column.id,
+            description: newTaskDescription.trim(),
         };
 
-        addTask(column.id, newTask);
+        await createTask(column.id, newTask);
 
         setNewTaskTitle("");
+
         setNewTaskDescription("");
     };
 
