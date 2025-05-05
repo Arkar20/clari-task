@@ -4,7 +4,6 @@ import { useToast } from "@/hooks/use-toast";
 import { addMessage, createAIMessage } from "@/app/actions/chat-message";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import AudioRecorder from "./audio-recorder";
 
 export const AIChatbotCreateForm = ({
     addToLocalMessages,

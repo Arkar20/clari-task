@@ -17,7 +17,6 @@ import {
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { useBoardStore } from "@/store/useBoardStore";
-import { generateUUID } from "@/lib/utils";
 
 interface Task {
     id: string;
@@ -68,12 +67,6 @@ export function BoardColumn({ board, activeTask }: BoardColumnProps) {
         if (!newTaskTitle.trim()) return;
 
         try {
-            addTask(board.id, {
-                id: generateUUID(),
-                title: newTaskTitle,
-                description: newTaskDescription,
-            });
-
             setNewTaskTitle("");
             setNewTaskDescription("");
             document.getElementById("close-dialog")?.click();

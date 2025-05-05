@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import AIChatbot from "@/components/ai-chatbot";
 import Board from "@/components/board";
 import { ThemeToggle } from "@/components/theme-toggle";

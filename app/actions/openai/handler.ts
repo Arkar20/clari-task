@@ -1,4 +1,5 @@
 import {
+    CreateColumnTool,
     CreateParamsTool,
     FindParamTool,
     RemoveParamTool,
@@ -8,6 +9,8 @@ import {
 } from "@/app/actions/openai/tool";
 import { prisma } from "@/lib/prisma";
 import { createTask } from "../task";
+import { title } from "process";
+import { createBoard } from "../board";
 
 const handleSearchTasks = async () => {
     const boards = await prisma.board.findMany({
@@ -42,6 +45,7 @@ const handleRemoveTask = async (args: RemoveParamTool) => {
 
     return taskRemoved;
 };
+
 const handleUpdateTask = async (args: UpdateParamsTool) => {
     const taskRemoved = await prisma.task.update({
         where: { id: args.taskId },
@@ -52,6 +56,14 @@ const handleUpdateTask = async (args: UpdateParamsTool) => {
     });
 
     return taskRemoved;
+};
+
+const handleCreateColumn = async (args: CreateColumnTool) => {
+    const board = await createBoard({
+        title: args.title,
+    });
+
+    return board;
 };
 
 export const handleTool = (
@@ -70,6 +82,13 @@ export const handleTool = (
 
         case "update_task":
             return handleUpdateTask(args as UpdateParamsTool);
+
+        case "create_column":
+            return handleCreateColumn(args as CreateColumnTool);
+
+        // move board
+
+        /// move task
 
         default:
             throw new Error("No Tool Handler Found!");

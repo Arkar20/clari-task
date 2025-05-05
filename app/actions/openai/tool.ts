@@ -17,10 +17,18 @@ type Tool =
     | {
           name: "update_task";
           params: CreateParamsTool;
+      }
+    | {
+          name: "create_column";
+          params: CreateColumnTool;
       };
 
 export type RemoveParamTool = {
     taskId: string;
+};
+
+export type CreateColumnTool = {
+    title: string;
 };
 
 export type FindParamTool = {
@@ -48,6 +56,7 @@ export type ToolParamsMap = {
         taskId: string;
     };
     update_task: UpdateParamsTool;
+    create_column: CreateColumnTool;
 };
 
 export type UpdateParamsTool = {
@@ -192,10 +201,32 @@ export const removeTaskTool: AiTool<"remove_task"> = {
     },
 };
 
+export const createColumnTool: AiTool<"create_column"> = {
+    type: "function",
+    function: {
+        name: "create_column",
+        description: "Create a new column or board.",
+        parameters: {
+            type: "object",
+            properties: {
+                title: {
+                    type: "string",
+                    description: "The title of the new column",
+                },
+                sort: {
+                    type: "number",
+                    description: "The sort order of the column (optional)",
+                },
+            },
+            required: ["title"],
+        },
+    },
+};
+
 export const tools = [
     searchTool,
     createTicketTool,
-    // findTaskTool,
+    createColumnTool,
     removeTaskTool,
     updateTicketTool,
 ];
