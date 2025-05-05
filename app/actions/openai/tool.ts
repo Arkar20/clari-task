@@ -1,9 +1,6 @@
-import { SearchParamsTool } from "./handler";
-
 type Tool =
     | {
           name: "search_tasks";
-          params: SearchParamsTool;
       }
     | {
           name: "create_task";
@@ -40,7 +37,7 @@ export type CreateParamsTool = {
 };
 
 export type ToolParamsMap = {
-    search_tasks: SearchParamsTool;
+    search_tasks: undefined;
     create_task: CreateParamsTool;
     find_task: {
         columnName: string;
@@ -198,7 +195,7 @@ export const removeTaskTool: AiTool<"remove_task"> = {
 export const tools = [
     searchTool,
     createTicketTool,
-    findTaskTool,
+    // findTaskTool,
     removeTaskTool,
     updateTicketTool,
 ];

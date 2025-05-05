@@ -65,7 +65,7 @@ export const AIChatbotCreateForm = ({
                 disabled={isPending}
                 className="dark:bg-gray-800 dark:border-gray-700"
             />
-            <AudioRecorder />
+            {/* <AudioRecorder /> */}
             <Button
                 onClick={() =>
                     startTransition(() => {
