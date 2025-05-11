@@ -25,8 +25,6 @@ export async function createBoard(data: CreateBoardInput) {
             },
         });
 
-        revalidatePath("/");
-
         return { success: true, board };
     } catch (error) {
         console.error("Error creating board:", error);

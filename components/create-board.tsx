@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter,
-    DialogClose,
 } from "./ui/dialog";
-import { PlusCircle } from "lucide-react";
+import React, { useState, useTransition } from "react";
+
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useBoardStore } from "@/store/useBoardStore";
+import { PlusCircle } from "lucide-react";
 import { createBoard } from "@/app/actions/board";
+import { useBoardStore } from "@/store/useBoardStore";
 
 export default function CreateBoard() {
     const [newColumnTitle, setNewColumnTitle] = useState("");
