@@ -25,7 +25,7 @@ import {
 import CreateBoard from "./create-board";
 import Column from "./column";
 import { swapBoardSort } from "@/app/actions/board";
-import { swapTaskSort, swapTaskToEmptyColumn } from "@/app/actions/task";
+import { swapTaskSort } from "@/app/actions/task";
 
 export default function Board({ boards }: { boards: ColumnType[] }) {
     const { columns, updateColumns } = useBoardStore();
@@ -215,28 +215,19 @@ export default function Board({ boards }: { boards: ColumnType[] }) {
                     }
                 }
 
-                console.log(active.data.current, over.data.current);
-
-                if (over.data.current?.type == "Column") {
-                    await swapTaskToEmptyColumn(
-                        {
-                            id: active.data.current?.task?.id,
-                            colId: active.data.current?.task?.columnId,
-                        },
-                        over.data.current?.column.id
-                    );
-                } else {
-                    await swapTaskSort(
-                        {
-                            id: active.data.current?.task?.id,
-                            colId: active.data.current?.task?.columnId,
-                        },
-                        {
-                            id: over.data.current?.task.id,
-                            colId: over.data.current?.task.columnId,
-                        }
-                    );
-                }
+                await swapTaskSort(
+                    {
+                        id: active.data.current?.task?.id,
+                        colId: active.data.current?.task?.columnId,
+                    },
+                    {
+                        id: over.data.current?.task?.id,
+                        colId:
+                            over.data.current?.type == "Column"
+                                ? over.data.current?.column.id
+                                : over.data.current?.task?.columnId,
+                    }
+                );
             }
 
             setOverId(null);

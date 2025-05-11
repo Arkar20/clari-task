@@ -21,7 +21,6 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { useState, memo } from "react";
-import { generateUUID } from "@/lib/utils";
 import { createTask } from "@/app/actions/task";
 
 interface ColumnProps {

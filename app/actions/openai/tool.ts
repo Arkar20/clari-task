@@ -21,10 +21,33 @@ type Tool =
     | {
           name: "create_column";
           params: CreateColumnTool;
+      }
+    | {
+          name: "swap_board";
+          params: SwapBoardTool;
+      }
+    | {
+          name: "swap_task";
+          params: SwapTaskTool;
       };
 
+export interface SwapTaskTool {
+    selected: {
+        id: string;
+        colId: string;
+    };
+    target: {
+        id: string;
+        colId: string;
+    };
+}
 export type RemoveParamTool = {
     taskId: string;
+};
+
+export type SwapBoardTool = {
+    selectedId: string | null;
+    targetId: string | null;
 };
 
 export type CreateColumnTool = {
@@ -57,6 +80,8 @@ export type ToolParamsMap = {
     };
     update_task: UpdateParamsTool;
     create_column: CreateColumnTool;
+    swap_board: SwapBoardTool;
+    swap_task: SwapTaskTool;
 };
 
 export type UpdateParamsTool = {
@@ -126,7 +151,7 @@ export const updateTicketTool: AiTool<"update_task"> = {
     function: {
         name: "update_task",
         description:
-            "Update an existing task/ticket's name, description, or column. Limit the action to one record.",
+            "Update the details of a single task, specifically its name and description. This action does not affect the task’s position or column assignment.",
         parameters: {
             type: "object",
             properties: {
@@ -223,10 +248,78 @@ export const createColumnTool: AiTool<"create_column"> = {
     },
 };
 
+export const swapBoardTool: AiTool<"swap_board"> = {
+    type: "function",
+    function: {
+        name: "swap_board",
+        description:
+            "Moving the sort order of two boards (or columns) by their IDs.",
+        parameters: {
+            type: "object",
+            properties: {
+                selectedId: {
+                    type: "string",
+                    description: "The ID of the first board to swap",
+                },
+                targetId: {
+                    type: "string",
+                    description: "The ID of the second board to swap",
+                },
+            },
+            required: ["selectedId", "targetId"],
+        },
+    },
+};
+
+export const swapTaskTool: AiTool<"swap_task"> = {
+    type: "function",
+    function: {
+        name: "swap_task",
+        description:
+            "Swap the position of two tasks by their task IDs and column IDs. This action is used for reordering tasks within a column or moving a task to a different column. It does not modify task content like name or description.",
+        parameters: {
+            type: "object",
+            properties: {
+                selected: {
+                    type: "object",
+                    properties: {
+                        id: {
+                            type: "string",
+                            description: "The ID of the first task to swap",
+                        },
+                        colId: {
+                            type: "string",
+                            description: "The column ID of the first task",
+                        },
+                    },
+                    required: ["id", "colId"],
+                },
+                target: {
+                    type: "object",
+                    properties: {
+                        id: {
+                            type: "string",
+                            description: "The ID of the second task to swap",
+                        },
+                        colId: {
+                            type: "string",
+                            description: "The column ID of the second task",
+                        },
+                    },
+                    required: ["id", "colId"],
+                },
+            },
+            required: ["selected", "target"],
+        },
+    },
+};
+
 export const tools = [
     searchTool,
     createTicketTool,
     createColumnTool,
     removeTaskTool,
     updateTicketTool,
+    swapBoardTool,
+    swapTaskTool,
 ];
